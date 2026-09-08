@@ -1,0 +1,200 @@
+/* Navbar fix — logo only, no brand text overlap */
+.site-header {
+    width: 100%;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.site-header .container.site-header-inner,
+.site-header-inner {
+    max-width: 1280px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 12px 24px;
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 28px;
+    box-sizing: border-box;
+}
+
+.site-brand,
+.site-brand-logo-only {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 68px;
+    min-width: 68px;
+    max-width: 68px;
+    text-decoration: none;
+    overflow: hidden;
+    position: static;
+}
+
+.site-brand-logo,
+.site-logo {
+    width: 58px;
+    height: 58px;
+    max-width: 58px;
+    object-fit: contain;
+    display: block;
+    flex: 0 0 auto;
+}
+
+.site-brand-text {
+    display: none !important;
+}
+
+.site-nav {
+    margin-left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 22px;
+    flex: 1 1 auto;
+    min-width: 0;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    position: static;
+}
+
+.site-nav > a,
+.site-nav > .site-nav-dropdown,
+.site-nav .site-nav-link,
+.site-nav .site-nav-dropdown-toggle,
+.site-nav .site-nav-button,
+.site-nav .site-admin-login,
+.site-nav .poltekkes-button,
+.site-nav .institution-button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    position: static;
+}
+
+.site-nav-link,
+.site-nav-dropdown-toggle {
+    font-size: 15px;
+    padding: 8px 0;
+}
+
+.site-nav-button,
+.poltekkes-button,
+.institution-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 20px;
+    border-radius: 999px;
+    white-space: nowrap;
+    font-weight: 800;
+    font-size: 13px;
+}
+
+.site-admin-login {
+    min-height: 40px;
+    padding: 0 16px;
+    font-size: 13px;
+}
+
+@media (max-width: 1200px) {
+    .site-header .container.site-header-inner,
+    .site-header-inner {
+        gap: 18px;
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .site-brand,
+    .site-brand-logo-only {
+        width: 60px;
+        min-width: 60px;
+        max-width: 60px;
+    }
+
+    .site-brand-logo,
+    .site-logo {
+        width: 52px;
+        height: 52px;
+        max-width: 52px;
+    }
+
+    .site-nav {
+        gap: 14px;
+    }
+
+    .site-nav-link,
+    .site-nav-dropdown-toggle {
+        font-size: 14px;
+    }
+
+    .site-nav-button,
+    .poltekkes-button,
+    .institution-button {
+        padding: 0 16px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .site-header .container.site-header-inner,
+    .site-header-inner {
+        gap: 12px;
+    }
+
+    .site-brand,
+    .site-brand-logo-only {
+        width: 54px;
+        min-width: 54px;
+        max-width: 54px;
+    }
+
+    .site-brand-logo,
+    .site-logo {
+        width: 48px;
+        height: 48px;
+        max-width: 48px;
+    }
+
+    .site-nav {
+        gap: 10px;
+    }
+
+    .site-nav-link,
+    .site-nav-dropdown-toggle {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 900px) {
+    .site-header .container.site-header-inner,
+    .site-header-inner {
+        flex-wrap: wrap;
+        align-items: center;
+        min-height: auto;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    .site-brand,
+    .site-brand-logo-only {
+        width: 58px;
+        min-width: 58px;
+        max-width: 58px;
+    }
+
+    .site-nav {
+        width: 100%;
+        margin-left: 0;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 10px 14px;
+        white-space: normal;
+    }
+}

@@ -1,0 +1,450 @@
+/* Dharma Wanita Persatuan — public catalog & branding */
+:root {
+    --dwp-navy: #1b365d;
+    --dwp-navy-soft: #243e66;
+    --dwp-teal: #0f8a9d;
+    --dwp-text: #1f2937;
+    --dwp-muted: #6b7280;
+    --dwp-border: #e5e7eb;
+    --dwp-bg: #f7f8fa;
+    --dwp-white: #ffffff;
+}
+
+.dwp-body {
+    background: var(--dwp-bg);
+    color: var(--dwp-text);
+}
+
+.dwp-header {
+    background: var(--dwp-white);
+    border-bottom: 1px solid var(--dwp-border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.dwp-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 84px;
+}
+
+.dwp-brand {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    overflow: visible !important;
+    text-decoration: none;
+    color: var(--dwp-navy);
+    flex: 0 1 auto;
+}
+
+.dwp-brand-logo,
+.dwp-header img.dwp-brand-logo {
+    width: 58px;
+    height: 58px;
+    max-width: 58px;
+    max-height: 58px;
+    object-fit: contain;
+    display: block;
+    flex: 0 0 auto;
+}
+
+.dwp-brand-copy {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.dwp-brand-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--dwp-navy);
+}
+
+.dwp-brand-subtitle {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--dwp-teal);
+    margin-top: 2px;
+}
+
+.dwp-nav-toggle {
+    display: none;
+    border: 1px solid var(--dwp-navy);
+    background: #fff;
+    color: var(--dwp-navy);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.dwp-nav {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: nowrap;
+}
+
+.dwp-nav .site-nav-link {
+    color: var(--dwp-navy);
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.dwp-nav .site-nav-link.active,
+.dwp-nav .site-nav-link:hover {
+    color: var(--dwp-teal);
+}
+
+.dwp-main {
+    min-height: 50vh;
+}
+
+.dwp-intro {
+    background: var(--dwp-white);
+    text-align: center;
+    padding: 48px 0 24px;
+}
+
+.dwp-kicker {
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--dwp-teal);
+    margin: 0 0 8px;
+}
+
+.dwp-intro h1,
+.dwp-section-title,
+.dwp-page h1 {
+    margin: 0;
+    color: var(--dwp-navy);
+    font-size: 32px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.dwp-intro-text,
+.dwp-section-desc,
+.dwp-intro-contact {
+    max-width: 720px;
+    margin: 12px auto 0;
+    color: var(--dwp-muted);
+    text-align: center;
+}
+
+.dwp-intro-contact a,
+.dwp-footer a,
+.dwp-page a {
+    color: var(--dwp-teal);
+}
+
+.dwp-catalog-section {
+    padding: 40px 0 16px;
+}
+
+.dwp-section-title {
+    font-size: 26px;
+    margin-bottom: 8px;
+}
+
+.dwp-section-desc {
+    margin-bottom: 28px;
+}
+
+.dwp-product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    padding-bottom: 24px;
+}
+
+.dwp-product-card {
+    background: var(--dwp-white);
+    border: 1px solid var(--dwp-border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.dwp-product-image {
+    aspect-ratio: 1 / 1;
+    background: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.dwp-product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background: #fff;
+}
+
+.dwp-product-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+    color: var(--dwp-navy);
+    font-weight: 700;
+    text-align: center;
+    padding: 16px;
+}
+
+.dwp-product-body {
+    padding: 16px 16px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1 1 auto;
+}
+
+.dwp-product-body h3 {
+    margin: 0;
+    color: var(--dwp-navy);
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.dwp-product-desc {
+    margin: 0;
+    color: var(--dwp-muted);
+    font-size: 13px;
+}
+
+.dwp-product-price {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.dwp-product-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 999px;
+    background: var(--dwp-teal);
+    color: #fff !important;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.dwp-product-cta-outline {
+    background: transparent;
+    color: var(--dwp-teal) !important;
+    border: 1px solid var(--dwp-teal);
+}
+
+.dwp-empty {
+    text-align: center;
+    color: var(--dwp-muted);
+    padding: 24px 0 48px;
+}
+
+.dwp-page {
+    padding: 40px 0 64px;
+}
+
+.dwp-page-card {
+    background: #fff;
+    border: 1px solid var(--dwp-border);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 860px;
+}
+
+.dwp-page-card h1 {
+    text-align: left;
+    margin-bottom: 16px;
+}
+
+.dwp-info-list {
+    padding-left: 1.2rem;
+    color: var(--dwp-text);
+}
+
+.dwp-info-list li {
+    margin: 0.4rem 0;
+}
+
+.dwp-media-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.dwp-media-item {
+    margin: 0;
+    border: 1px solid var(--dwp-border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.dwp-media-item img {
+    width: 100%;
+    height: 220px;
+    object-fit: contain;
+    display: block;
+}
+
+.dwp-contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.dwp-footer {
+    background: #fff;
+    border-top: 1px solid var(--dwp-border);
+    margin-top: 32px;
+}
+
+.dwp-footer-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr 1.2fr;
+    gap: 32px;
+    padding: 40px 0 24px;
+}
+
+.dwp-footer-logo {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}
+
+.dwp-footer-title {
+    margin: 12px 0 0;
+    font-weight: 800;
+    color: var(--dwp-navy);
+}
+
+.dwp-footer-sub {
+    margin: 4px 0 0;
+    color: var(--dwp-teal);
+    font-weight: 600;
+}
+
+.dwp-footer-heading {
+    margin: 0 0 12px;
+    color: var(--dwp-navy);
+    font-size: 18px;
+}
+
+.dwp-footer-menu,
+.dwp-footer-contact {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dwp-footer-menu li,
+.dwp-footer-contact li {
+    margin: 0 0 8px;
+    color: var(--dwp-muted);
+}
+
+.dwp-footer-copy {
+    border-top: 1px solid #f1e6d8;
+    background: #f8f1e8;
+    text-align: center;
+    padding: 14px 16px;
+    color: #5b6472;
+    font-size: 14px;
+}
+
+.dwp-footer-copy p {
+    margin: 0;
+}
+
+.site-footer {
+    display: none;
+}
+
+@media (max-width: 1024px) {
+    .dwp-product-grid,
+    .dwp-media-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dwp-footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 900px) {
+    .dwp-nav-toggle {
+        display: inline-flex;
+        margin-left: auto;
+    }
+
+    .dwp-header-inner {
+        flex-wrap: wrap;
+        min-height: auto;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    .dwp-nav {
+        display: none;
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 10px 16px;
+        padding-top: 8px;
+        white-space: normal;
+    }
+
+    .dwp-nav.is-open {
+        display: flex;
+    }
+}
+
+@media (max-width: 640px) {
+    .dwp-intro h1,
+    .dwp-page h1 {
+        font-size: 26px;
+    }
+
+    .dwp-section-title {
+        font-size: 22px;
+    }
+
+    .dwp-product-grid,
+    .dwp-media-grid,
+    .dwp-footer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dwp-brand-title {
+        font-size: 15px;
+    }
+
+    .dwp-page-card {
+        padding: 20px;
+    }
+}
