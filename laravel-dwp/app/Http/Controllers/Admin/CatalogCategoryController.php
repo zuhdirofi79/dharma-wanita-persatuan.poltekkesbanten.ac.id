@@ -67,6 +67,7 @@ class CatalogCategoryController extends Controller
 
     public function destroy(DwpCatalogCategory $category)
     {
+        abort_unless(request()->user()?->canDeleteCatalog(), 403, 'Hanya superadmin yang dapat menghapus kategori.');
         $name = $category->name;
         $category->delete();
 

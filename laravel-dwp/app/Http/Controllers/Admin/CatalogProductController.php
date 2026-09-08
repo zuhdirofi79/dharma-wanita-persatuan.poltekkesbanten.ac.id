@@ -84,6 +84,7 @@ class CatalogProductController extends Controller
 
     public function destroy(DwpCatalogProduct $product)
     {
+        abort_unless(request()->user()?->canDeleteCatalog(), 403, 'Hanya superadmin yang dapat menghapus produk.');
         $name = $product->name;
         $this->deleteStoredImage($product->image_path);
         $product->delete();

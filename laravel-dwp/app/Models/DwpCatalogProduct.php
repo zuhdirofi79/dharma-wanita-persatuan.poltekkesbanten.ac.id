@@ -95,7 +95,7 @@ class DwpCatalogProduct extends Model
         }
 
         if ($this->price === null) {
-            return 'Hubungi Tim Sekretariat DWP';
+            return 'Hubungi Tim Sekretariat';
         }
 
         $formatted = number_format((float) $this->price, 0, ',', '.');
@@ -103,22 +103,86 @@ class DwpCatalogProduct extends Model
             ? ' / '.$this->unit
             : '';
 
-        return $formatted.$unit;
+        return 'Rp '.$formatted.$unit;
+    }
+
+    public function shortDescription(int $limit = 90): string
+    {
+        $text = trim(preg_replace('/\s+/', ' ', strip_tags((string) $this->description)) ?? '');
+
+        if ($text === '') {
+            return $this->isTogaProduct()
+                ? 'Paket baju toga wisuda resmi untuk mahasiswa Poltekkes Kemenkes Banten Tahun 2026/2027.'
+                : 'Hubungi Tim Sekretariat DWP Poltekkes Kemenkes Banten untuk pemesanan.';
+        }
+
+        return Str::limit($text, $limit);
+    }
+
+    public static function isTogaSlug(?string $slug): bool
+    {
+        return in_array($slug, [
+            'paket-baju-toga-wisuda-poltekkes-kemenkes-banten',
+            'baju-toga-wisuda-mahasiswa-mahasiswi',
+        ], true);
     }
 
     public function isTogaProduct(): bool
     {
-        return $this->slug === 'baju-toga-wisuda-mahasiswa-mahasiswi'
+        return self::isTogaSlug($this->slug)
             || str_contains(Str::slug((string) $this->name), 'toga');
+    }
+
+    public function detailUrl(): string
+    {
+        return route('produk.show', $this->slug ?: 'paket-baju-toga-wisuda-poltekkes-kemenkes-banten');
+    }
+
+    public function orderUrl(): string
+    {
+        if ($this->isTogaProduct()) {
+            return route('wisuda.index');
+        }
+
+        return config('dwp.contact_wa_primary');
+    }
+
+    public function orderLabel(): string
+    {
+        return $this->isTogaProduct() ? 'Pesan Toga Wisuda' : 'Hubungi Sekretariat';
     }
 
     public function ctaUrl(): ?string
     {
-        return $this->isTogaProduct() ? route('wisuda.index') : null;
+        return $this->orderUrl();
     }
 
     public function ctaLabel(): ?string
     {
-        return $this->ctaUrl() ? 'Lihat Detail Wisuda' : null;
+        return $this->isTogaProduct() ? 'Pesan Sekarang' : 'Hubungi Sekretariat';
+    }
+
+    public static function togaFallback(): self
+    {
+        $product = new self([
+            'name' => 'Paket Baju Toga Wisuda Poltekkes Kemenkes Banten',
+            'slug' => 'paket-baju-toga-wisuda-poltekkes-kemenkes-banten',
+            'description' => 'Paket baju toga wisuda resmi untuk mahasiswa Poltekkes Kemenkes Banten Tahun 2026/2027. Pemesanan dan informasi pembayaran dapat menghubungi Tim Sekretariat DWP Poltekkes Kemenkes Banten.',
+            'price_text' => 'Hubungi Tim Sekretariat',
+            'unit' => 'paket',
+            'image_path' => 'src/img/wisuda/Baju-Toga-Mahasiswa.jpeg',
+            'contact_name' => config('dwp.contact_name'),
+            'contact_phone' => config('dwp.contact_phone_primary').' / '.config('dwp.contact_phone_secondary'),
+            'sort_order' => 1,
+            'is_featured' => true,
+            'is_active' => true,
+        ]);
+
+        $product->setRelation('category', new DwpCatalogCategory([
+            'name' => 'Wisuda',
+            'slug' => 'wisuda',
+        ]));
+
+        return $product;
     }
 }

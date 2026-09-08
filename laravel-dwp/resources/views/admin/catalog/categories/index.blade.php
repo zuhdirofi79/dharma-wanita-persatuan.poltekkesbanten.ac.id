@@ -33,10 +33,12 @@
                     <td>{{ $category->is_active ? 'Aktif' : 'Nonaktif' }}</td>
                     <td style="white-space:nowrap;">
                         <a href="{{ route('admin.catalog.categories.edit', $category) }}" class="btn-sm btn-blue">Edit</a>
-                        <form method="POST" action="{{ route('admin.catalog.categories.destroy', $category) }}" style="display:inline;" onsubmit="return confirm('Hapus kategori ini?')">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn-sm btn-red">Hapus</button>
-                        </form>
+                        @if(auth()->user()->canDeleteCatalog())
+                            <form method="POST" action="{{ route('admin.catalog.categories.destroy', $category) }}" style="display:inline;" onsubmit="return confirm('Hapus kategori ini?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="btn-sm btn-red">Hapus</button>
+                            </form>
+                        @endif
                     </td>
                 </tr>
             @empty

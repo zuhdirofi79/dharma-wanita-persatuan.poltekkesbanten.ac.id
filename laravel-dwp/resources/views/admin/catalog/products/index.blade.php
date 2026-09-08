@@ -53,10 +53,12 @@
                     <td>{{ $product->is_active ? 'Aktif' : 'Nonaktif' }}</td>
                     <td style="white-space:nowrap;">
                         <a href="{{ route('admin.catalog.products.edit', $product) }}" class="btn-sm btn-blue">Edit</a>
-                        <form method="POST" action="{{ route('admin.catalog.products.destroy', $product) }}" style="display:inline;" onsubmit="return confirm('Hapus produk ini?')">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="btn-sm btn-red">Hapus</button>
-                        </form>
+                        @if(auth()->user()->canDeleteCatalog())
+                            <form method="POST" action="{{ route('admin.catalog.products.destroy', $product) }}" style="display:inline;" onsubmit="return confirm('Hapus produk ini?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="btn-sm btn-red">Hapus</button>
+                            </form>
+                        @endif
                     </td>
                 </tr>
             @empty

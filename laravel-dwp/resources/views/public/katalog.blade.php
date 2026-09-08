@@ -3,68 +3,77 @@
 @section('title', 'Katalog DWP - Dharma Wanita Persatuan Poltekkes Kemenkes Banten')
 
 @section('content')
-<section class="dwp-intro">
-    <div class="container">
-        <p class="dwp-kicker">Katalog Produk</p>
+<section class="dwp-hero">
+    <div class="container dwp-hero-inner">
+        <p class="dwp-kicker">Katalog Produk DWP</p>
         <h1>Katalog Dharma Wanita Persatuan</h1>
         <p class="dwp-intro-text">
-            Pemesanan atribut, batik, pernak-pernik, dan toga wisuda melalui
-            Dharma Wanita Persatuan Poltekkes Kemenkes Banten.
+            Pemesanan atribut, batik, pernak-pernik, dan toga wisuda melalui Dharma Wanita Persatuan Poltekkes Kemenkes Banten.
         </p>
         <p class="dwp-intro-contact">
-            Pemesanan: <strong>{{ $dwp['contact_name'] }}</strong><br>
-            <a href="{{ $dwp['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer">{{ $dwp['contact_phone_primary'] }}</a>
+            Pemesanan: Dias Arliadini (Tim Sekretariat DWP Poltekkes Kemenkes Banten)<br>
+            <a href="{{ $dwp['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer">+62 851-8777-8838</a>
             atau
-            <a href="{{ $dwp['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer">{{ $dwp['contact_phone_secondary'] }}</a>
+            <a href="{{ $dwp['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer">+62 877-4112-1505</a>
         </p>
+        <div class="dwp-hero-actions">
+            <a href="#produk-pilihan" class="dwp-btn dwp-btn-orange">Lihat Produk Pilihan</a>
+            <a href="{{ route('wisuda.index') }}" class="dwp-btn dwp-btn-white">Pesan Toga Wisuda</a>
+        </div>
     </div>
 </section>
 
-@forelse($categories as $category)
+@if($categories->isNotEmpty())
+    <nav class="dwp-category-chips" aria-label="Kategori produk">
+        <div class="container dwp-chip-row">
+            @foreach($categories as $category)
+                <a href="#{{ $category->slug }}" class="dwp-chip">{{ $category->name }}</a>
+            @endforeach
+        </div>
+    </nav>
+@endif
+
+<section class="dwp-catalog-section" id="produk-pilihan">
+    <div class="container">
+        <div class="dwp-section-head">
+            <div>
+                <p class="dwp-kicker">Marketplace DWP</p>
+                <h2 class="dwp-section-title">Produk Pilihan</h2>
+            </div>
+            <a href="{{ route('wisuda.index') }}" class="dwp-section-link">Pesan Toga Wisuda</a>
+        </div>
+        <div class="dwp-market-grid">
+            @foreach($featured as $product)
+                @include('partials.dwp-product-card', ['product' => $product])
+            @endforeach
+        </div>
+        @if($catalogEmpty ?? false)
+            <p class="dwp-empty-note">
+                Katalog produk belum tersedia. Silakan admin mengunggah produk melalui dashboard admin.
+                @guest
+                    <a href="{{ route('admin.login') }}" class="dwp-btn dwp-btn-primary">Login Admin</a>
+                @endguest
+            </p>
+        @endif
+    </div>
+</section>
+
+@foreach($categories as $category)
+    @continue($category->products->isEmpty())
     <section class="dwp-catalog-section" id="{{ $category->slug }}">
         <div class="container">
-            <h2 class="dwp-section-title">{{ $category->name }}</h2>
+            <div class="dwp-section-head">
+                <h2 class="dwp-section-title">{{ $category->name }}</h2>
+            </div>
             @if($category->description)
                 <p class="dwp-section-desc">{{ $category->description }}</p>
             @endif
-
-            @if($category->products->isEmpty())
-                <p class="dwp-empty">Produk pada kategori ini belum tersedia.</p>
-            @else
-                <div class="dwp-product-grid">
-                    @foreach($category->products as $product)
-                        <article class="dwp-product-card {{ $product->is_featured ? 'is-featured' : '' }}">
-                            <div class="dwp-product-image">
-                                @if($product->imageUrl())
-                                    <img src="{{ $product->imageUrl() }}" alt="{{ $product->name }}" loading="lazy">
-                                @else
-                                    <div class="dwp-product-placeholder" aria-hidden="true">
-                                        <span>{{ $product->name }}</span>
-                                    </div>
-                                @endif
-                            </div>
-                            <div class="dwp-product-body">
-                                <h3>{{ $product->name }}</h3>
-                                @if($product->description)
-                                    <p class="dwp-product-desc">{{ $product->description }}</p>
-                                @endif
-                                <p class="dwp-product-price">{{ $product->displayPrice() }}</p>
-                                @if($product->ctaUrl())
-                                    <a href="{{ $product->ctaUrl() }}" class="dwp-product-cta">{{ $product->ctaLabel() }}</a>
-                                @endif
-                            </div>
-                        </article>
-                    @endforeach
-                </div>
-            @endif
+            <div class="dwp-market-grid">
+                @foreach($category->products as $product)
+                    @include('partials.dwp-product-card', ['product' => $product])
+                @endforeach
+            </div>
         </div>
     </section>
-@empty
-    <section class="dwp-catalog-section">
-        <div class="container">
-            <h2 class="dwp-section-title">Katalog DWP</h2>
-            <p class="dwp-empty">Katalog produk sedang disiapkan. Silakan hubungi Tim Sekretariat DWP Poltekkes Kemenkes Banten.</p>
-        </div>
-    </section>
-@endforelse
+@endforeach
 @endsection

@@ -67,6 +67,11 @@ class User extends Authenticatable
         return $this->isSuperAdmin();
     }
 
+    public function canDeleteCatalog(): bool
+    {
+        return $this->isSuperAdmin();
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';

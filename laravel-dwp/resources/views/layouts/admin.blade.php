@@ -14,8 +14,9 @@
             <nav class="admin-sidebar-nav">
                 <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>
                 @if(auth()->user()->canManageCatalog())
+                    <a href="{{ route('admin.catalog.products.index') }}" class="{{ request()->routeIs('admin.catalog.*') ? 'active' : '' }}">Manajemen Katalog</a>
                     <a href="{{ route('admin.catalog.categories.index') }}" class="{{ request()->routeIs('admin.catalog.categories.*') ? 'active' : '' }}">Kategori Produk</a>
-                    <a href="{{ route('admin.catalog.products.index') }}" class="{{ request()->routeIs('admin.catalog.products.*') ? 'active' : '' }}">Produk Katalog DWP</a>
+                    <a href="{{ route('admin.catalog.products.index') }}" class="{{ request()->routeIs('admin.catalog.products.*') ? 'active' : '' }}">Kelola Produk</a>
                 @endif
                 <a href="{{ route('admin.wisuda.orders.index') }}" class="{{ request()->routeIs('admin.wisuda.*') ? 'active' : '' }}">Pesanan Toga Wisuda</a>
                 <a href="{{ route('admin.submissions.index') }}" class="{{ request()->routeIs('admin.submissions.*') ? 'active' : '' }}">Pengajuan Layanan</a>
