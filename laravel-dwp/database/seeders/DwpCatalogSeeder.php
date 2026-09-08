@@ -55,9 +55,9 @@ class DwpCatalogSeeder extends Seeder
             [
                 'dwp_catalog_category_id' => $categoryMap['wisuda']->id,
                 'name' => 'Paket Baju Toga Wisuda Poltekkes Kemenkes Banten',
-                'description' => 'Paket baju toga wisuda resmi untuk mahasiswa Poltekkes Kemenkes Banten Tahun 2026/2027. Pemesanan dan informasi pembayaran dapat menghubungi Tim Sekretariat DWP Poltekkes Kemenkes Banten.',
+                'description' => 'Paket baju toga wisuda resmi untuk mahasiswa Poltekkes Kemenkes Banten Tahun 2026/2027. Pembayaran ke rekening BRI BritAma Bisnis DWP POLTEKES BANTEN, kemudian unggah bukti pembayaran untuk diverifikasi Tim Sekretariat DWP Poltekkes Kemenkes Banten.',
                 'price' => null,
-                'price_text' => 'Hubungi Tim Sekretariat',
+                'price_text' => 'Bank BRI · BritAma Bisnis',
                 'unit' => 'paket',
                 'image_path' => $togaImage,
                 'contact_name' => $contactName,

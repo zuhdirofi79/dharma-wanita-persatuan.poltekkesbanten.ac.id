@@ -354,7 +354,7 @@ class WisudaOrderController extends Controller
     private function paymentStatuses(): array
     {
         return [
-            'unpaid' => 'Menunggu informasi pembayaran',
+            'unpaid' => 'Menunggu pembayaran',
             'uploaded' => 'Menunggu verifikasi',
             'verified' => 'Terverifikasi',
             'rejected' => 'Ditolak',

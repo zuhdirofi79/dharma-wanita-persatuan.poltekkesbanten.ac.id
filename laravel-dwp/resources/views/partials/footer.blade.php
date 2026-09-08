@@ -27,12 +27,9 @@
             <ul class="dwp-footer-contact">
                 <li>Poltekkes Kemenkes Banten, Jl. Syech Nawawi Al Bantani No.12, Cipocok Jaya, Kota Serang</li>
                 <li><a href="mailto:humas@poltekkesbanten.ac.id">humas@poltekkesbanten.ac.id</a></li>
-                <li>Dias Arliadini (Tim Sekretariat DWP Poltekkes Kemenkes Banten)</li>
-                <li>
-                    <a href="{{ $dwp['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer">+62 851-8777-8838</a>
-                    atau
-                    <a href="{{ $dwp['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer">+62 877-4112-1505</a>
-                </li>
+                <li>Kontak Sekretariat DWP:</li>
+                <li>Dias Arliadini (<a href="{{ $dwp['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer">{{ $dwp['contact_phone_primary'] }}</a>)</li>
+                <li>Putri Ratna Dewi (<a href="{{ $dwp['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer">{{ $dwp['contact_phone_secondary'] }}</a>)</li>
             </ul>
         </div>
     </div>

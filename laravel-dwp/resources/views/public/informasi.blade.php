@@ -13,10 +13,11 @@
             <li>Mengenai pengambilan, silakan menghubungi Tim Sekretariat DWP Poltekkes Kemenkes Banten.</li>
         </ul>
         <p>
-            <strong>Kontak pemesanan:</strong><br>
-            {{ $dwp['contact_name'] }}<br>
-            {{ $dwp['contact_phone_primary'] }} atau {{ $dwp['contact_phone_secondary'] }}
+            <strong>Kontak Sekretariat DWP:</strong><br>
+            Dias Arliadini ({{ $dwp['contact_phone_primary'] }})<br>
+            Putri Ratna Dewi ({{ $dwp['contact_phone_secondary'] }})
         </p>
+        @include('partials.dwp-secretariat-contacts')
         <p>
             <a href="{{ route('katalog') }}">Lihat Katalog</a> ·
             <a href="{{ route('wisuda.index') }}">Pemesanan Toga Wisuda</a>

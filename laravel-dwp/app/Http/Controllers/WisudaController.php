@@ -62,7 +62,7 @@ class WisudaController extends Controller
                 'orderCode' => $order->order_code,
                 'token' => $order->public_token,
             ])
-            ->with('success', 'Pesanan toga wisuda berhasil dibuat. Untuk informasi rekening, hubungi Tim Sekretariat DWP Poltekkes Kemenkes Banten lalu unggah bukti pembayaran.');
+            ->with('success', 'Pesanan toga wisuda berhasil dibuat. Silakan bayar ke rekening BRI BritAma Bisnis DWP POLTEKES BANTEN, lalu unggah bukti pembayaran.');
     }
 
     public function showOrder(Request $request, string $orderCode)

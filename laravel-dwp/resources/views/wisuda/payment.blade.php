@@ -34,7 +34,7 @@
                 <p><strong>Jumlah:</strong> {{ $order->quantity }}</p>
                 <p><strong>Status Pembayaran:</strong>
                     @if($order->payment_status === 'unpaid')
-                        Menunggu informasi pembayaran
+                        Menunggu pembayaran ke rekening BRI BritAma Bisnis
                     @else
                         {{ $order->paymentStatusLabel() }}
                     @endif
@@ -47,39 +47,16 @@
                 @endif
             </div>
 
-            <div class="wisuda-status-waiting">
-                <strong>Untuk informasi rekening pembayaran, silakan hubungi Tim Sekretariat DWP Poltekkes Kemenkes Banten.</strong>
-                <p style="margin:0.5rem 0 0;">
-                    Setelah mendapat info rekening dan menyelesaikan pembayaran, unggah bukti di form bawah.
-                </p>
-            </div>
+            @include('partials.dwp-payment-card')
+            <p class="dwp-pay-hint">Pastikan nama pemesan sesuai dengan data yang diisi agar verifikasi lebih mudah.</p>
 
-            <div class="wisuda-payment-box">
-                <h3 style="margin-top:0;">Instruksi Pembayaran</h3>
-                <p>{{ $config['payment_instruction'] }}</p>
-
-                @if($config['payment_bank_name'] || $config['payment_account_name'] || $config['payment_account_number'])
-                    <div class="wisuda-contact-box" style="margin-top:1rem;">
-                        @if($config['payment_bank_name'])
-                            <p><strong>Bank:</strong> {{ $config['payment_bank_name'] }}</p>
-                        @endif
-                        @if($config['payment_account_name'])
-                            <p><strong>Atas Nama:</strong> {{ $config['payment_account_name'] }}</p>
-                        @endif
-                        @if($config['payment_account_number'])
-                            <p><strong>Nomor Rekening:</strong> {{ $config['payment_account_number'] }}</p>
-                        @endif
-                    </div>
-                @endif
-
-                <div class="wisuda-hero-actions" style="margin-top:1rem;">
-                    <a href="{{ $config['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="btn-sm btn-green">
-                        Hubungi Tim Sekretariat
-                    </a>
-                    <a href="{{ $config['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer" class="btn-sm btn-blue">
-                        Kontak Alternatif
-                    </a>
-                </div>
+            <div class="wisuda-hero-actions" style="margin-top:1rem;">
+                <a href="{{ $config['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="btn-sm btn-green">
+                    Hubungi Dias Arliadini
+                </a>
+                <a href="{{ $config['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer" class="btn-sm btn-blue">
+                    Hubungi Putri Ratna Dewi
+                </a>
             </div>
 
             @if($order->hasPaymentProof())

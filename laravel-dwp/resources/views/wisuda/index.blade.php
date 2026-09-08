@@ -59,6 +59,16 @@
     $defaultSrc = asset('src/img/wisuda/'.$defaultFile);
 @endphp
 
+<div class="dwp-wisuda-hero">
+    <div class="container">
+        <p class="dwp-kicker">Pemesanan Toga Wisuda</p>
+        <p class="dwp-wisuda-hero-title">Paket Baju Toga Wisuda Poltekkes Kemenkes Banten</p>
+        <p class="dwp-intro-text" style="margin-top:10px;max-width:720px;color:#334155;">
+            Pembayaran ke rekening BRI BritAma Bisnis DWP POLTEKES BANTEN, lalu unggah bukti pembayaran untuk diverifikasi Tim Sekretariat DWP Poltekkes Kemenkes Banten.
+        </p>
+    </div>
+</div>
+
 <div class="wisuda-page">
     <div class="wisuda-container">
         <div class="wisuda-product-shell">
@@ -104,8 +114,8 @@
                     <p class="wisuda-rating-line">★★★★★ 5.0 | Produk resmi Wisuda Poltekkes Kemenkes Banten</p>
 
                     <div class="wisuda-price-box">
-                        <p class="wisuda-price-main">Biaya: Hubungi Tim Sekretariat</p>
-                        <p class="wisuda-price-note">Informasi rekening pembayaran akan dikonfirmasi oleh Tim Sekretariat DWP Poltekkes Kemenkes Banten.</p>
+                        <p class="wisuda-price-main">Pembayaran ke rekening BRI BritAma Bisnis</p>
+                        @include('partials.dwp-payment-card')
                     </div>
 
                     <ul class="wisuda-meta-list">
@@ -152,17 +162,17 @@
 
                     <div class="wisuda-cta-row">
                         <a href="#wisuda-checkout" class="wisuda-btn-primary" id="wisudaOrderCta">Pesan Baju Toga Sekarang</a>
-                        <a href="#tab-kontak" class="wisuda-btn-outline" id="wisudaContactCta">Hubungi Tim Sekretariat</a>
+                        <a href="#tab-kontak" class="wisuda-btn-outline" id="wisudaContactCta">Hubungi Sekretariat DWP</a>
                     </div>
 
                     <div class="wisuda-seller-box">
                         <div>
-                            <strong>Tim Sekretariat DWP Poltekkes Kemenkes Banten</strong>
-                            <span>{{ $config['contact_name'] }} · Pelayanan {{ $config['service_hours'] }}</span>
+                            <strong>Kontak Sekretariat DWP:</strong>
+                            <span>Dias Arliadini ({{ $config['contact_phone_primary'] }}) · Putri Ratna Dewi ({{ $config['contact_phone_secondary'] }}) · Pelayanan {{ $config['service_hours'] }}</span>
                         </div>
                         <div class="wisuda-option-buttons">
-                            <a href="{{ $config['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="wisuda-btn-outline" style="padding:8px 12px;font-size:13px;">Hubungi Tim Sekretariat</a>
-                            <a href="{{ $config['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer" class="wisuda-btn-outline" style="padding:8px 12px;font-size:13px;">Kontak Alternatif</a>
+                            <a href="{{ $config['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="wisuda-btn-outline" style="padding:8px 12px;font-size:13px;">Hubungi Dias Arliadini</a>
+                            <a href="{{ $config['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer" class="wisuda-btn-outline" style="padding:8px 12px;font-size:13px;">Hubungi Putri Ratna Dewi</a>
                         </div>
                     </div>
                 </div>
@@ -207,16 +217,15 @@
                         </ul>
                     </div>
                     <div class="wisuda-tab-panel" data-panel="kontak">
-                        <p>Bila ada pertanyaan, silakan menghubungi Tim Sekretariat DWP Poltekkes Kemenkes Banten.</p>
+                        <p>Kontak Sekretariat DWP:</p>
+                        <p>Dias Arliadini ({{ $config['contact_phone_primary'] }})</p>
+                        <p>Putri Ratna Dewi ({{ $config['contact_phone_secondary'] }})</p>
                         <p>Pelayanan pukul 08.00 sampai 17.00 WIB. Di luar jam tersebut, silakan menunggu hari berikutnya.</p>
                         <p>{{ $config['order_deadline_note'] }}</p>
                         <div class="wisuda-contact-inline">
-                            <strong>{{ $config['contact_name'] }}</strong>
-                            <p style="margin:6px 0;">{{ $config['contact_phone_primary'] }}</p>
-                            <p style="margin:6px 0;">atau {{ $config['contact_phone_secondary'] }}</p>
                             <div class="wisuda-cta-row" style="margin-top:10px;">
-                                <a href="{{ $config['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="wisuda-btn-primary">Hubungi Tim Sekretariat</a>
-                                <a href="{{ $config['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer" class="wisuda-btn-outline">Kontak Alternatif</a>
+                                <a href="{{ $config['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="wisuda-btn-primary">Hubungi Dias Arliadini</a>
+                                <a href="{{ $config['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer" class="wisuda-btn-outline">Hubungi Putri Ratna Dewi</a>
                             </div>
                         </div>
                     </div>
@@ -226,7 +235,7 @@
             {{-- Checkout form --}}
             <section class="wisuda-checkout-card" id="wisuda-checkout">
                 <h2>Checkout Pemesanan Toga</h2>
-                <p style="margin:0;color:#6b7280;">Lengkapi data pemesanan. Setelah submit, Anda mendapat kode pesanan dan dapat mengunggah bukti pembayaran setelah mendapat info rekening dari Tim Sekretariat DWP Poltekkes Kemenkes Banten.</p>
+                <p style="margin:0;color:#6b7280;">Lengkapi data pemesanan. Setelah submit, Anda mendapat kode pesanan dan dapat mengunggah bukti pembayaran ke rekening BRI BritAma Bisnis DWP POLTEKES BANTEN.</p>
 
                 <div class="wisuda-checkout-summary" id="wisudaCheckoutSummary">
                     Ringkasan pilihan: <strong id="summaryProdi">Belum dipilih</strong> ·
@@ -328,6 +337,9 @@
                         </div>
                     </div>
 
+                    @include('partials.dwp-payment-card')
+                    <p class="dwp-pay-hint">Pastikan nama pemesan sesuai dengan data yang diisi agar verifikasi lebih mudah.</p>
+
                     <div class="wisuda-cta-row">
                         <button type="submit" class="wisuda-btn-primary">Kirim Pemesanan</button>
                         <a href="{{ route('wisuda.order.create') }}" class="wisuda-btn-outline">Buka Form Terpisah</a>
@@ -335,11 +347,12 @@
                 </form>
 
                 <div class="wisuda-contact-inline">
-                    <strong>Butuh info rekening?</strong>
-                    <p style="margin:6px 0;">Untuk informasi rekening pembayaran, silakan hubungi Tim Sekretariat DWP Poltekkes Kemenkes Banten.</p>
+                    <strong>Kontak Sekretariat DWP:</strong>
+                    <p style="margin:6px 0;">Dias Arliadini ({{ $config['contact_phone_primary'] }})</p>
+                    <p style="margin:6px 0;">Putri Ratna Dewi ({{ $config['contact_phone_secondary'] }})</p>
                     <div class="wisuda-cta-row" style="margin-top:8px;">
-                        <a href="{{ $config['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="wisuda-btn-outline">Hubungi Tim Sekretariat</a>
-                        <a href="{{ $config['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer" class="wisuda-btn-outline">Kontak Alternatif</a>
+                        <a href="{{ $config['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="wisuda-btn-outline">Hubungi Dias Arliadini</a>
+                        <a href="{{ $config['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer" class="wisuda-btn-outline">Hubungi Putri Ratna Dewi</a>
                     </div>
                 </div>
             </section>

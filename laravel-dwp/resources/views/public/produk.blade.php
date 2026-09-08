@@ -27,15 +27,19 @@
                 {!! nl2br(e($product->description ?: $product->shortDescription(240))) !!}
             </div>
             <div class="dwp-detail-contact">
-                <strong>Kontak pemesanan</strong>
-                <p>{{ $product->contact_name ?: $dwp['contact_name'] }}</p>
-                <p>{{ $product->contact_phone ?: ($dwp['contact_phone_primary'].' atau '.$dwp['contact_phone_secondary']) }}</p>
+                <strong>Kontak Sekretariat DWP:</strong>
+                <p>Dias Arliadini ({{ $dwp['contact_phone_primary'] }})</p>
+                <p>Putri Ratna Dewi ({{ $dwp['contact_phone_secondary'] }})</p>
             </div>
+            @if($product->isTogaProduct())
+                @include('partials.dwp-payment-card')
+            @endif
             <div class="dwp-product-actions">
                 <a href="{{ $product->orderUrl() }}" class="dwp-btn dwp-btn-primary" @if(!$product->isTogaProduct()) target="_blank" rel="noopener noreferrer" @endif>
                     {{ $product->orderLabel() }}
                 </a>
-                <a href="{{ $dwp['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="dwp-btn dwp-btn-outline">Hubungi Sekretariat</a>
+                <a href="{{ $dwp['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="dwp-btn dwp-btn-outline">Hubungi Dias Arliadini</a>
+                <a href="{{ $dwp['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer" class="dwp-btn dwp-btn-outline">Hubungi Putri Ratna Dewi</a>
             </div>
             <p><a href="{{ route('beranda') }}">← Kembali ke katalog</a></p>
         </div>

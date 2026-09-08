@@ -45,7 +45,7 @@
         </div>
 
         <div class="form-group">
-            <label for="price_text">Teks Harga (opsional, contoh: Hubungi Tim Sekretariat DWP)</label>
+            <label for="price_text">Teks Harga (opsional, contoh: Bank BRI · BritAma Bisnis)</label>
             <input type="text" name="price_text" id="price_text" class="form-control" value="{{ old('price_text', $product->price_text) }}">
         </div>
 

@@ -7,8 +7,8 @@
     <link rel="icon" href="{{ asset('src/img/logo-dwp.jpeg') }}" type="image/jpeg">
     <link rel="apple-touch-icon" href="{{ asset('src/img/logo-dwp.jpeg') }}">
     <link rel="stylesheet" href="{{ env('CSS_URL', asset('css/akademik.css')) }}">
-    <link rel="stylesheet" href="{{ asset('css/navbar-fix.css') }}?v=20260908-dwp4">
-    <link rel="stylesheet" href="{{ asset('css/dwp.css') }}?v=20260908-dwp4">
+    <link rel="stylesheet" href="{{ asset('css/navbar-fix.css') }}?v=20260908-dwp5">
+    <link rel="stylesheet" href="{{ asset('css/dwp.css') }}?v=20260908-dwp5">
     @stack('styles')
 </head>
 <body class="dwp-body">

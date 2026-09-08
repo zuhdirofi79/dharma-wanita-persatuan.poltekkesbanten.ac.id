@@ -40,6 +40,8 @@
     @endif
 </div>
 
+@include('partials.dwp-payment-card')
+
 <div class="admin-card">
     <h3 style="margin-top:0;">Bukti Pembayaran</h3>
     @if($order->hasPaymentProof())

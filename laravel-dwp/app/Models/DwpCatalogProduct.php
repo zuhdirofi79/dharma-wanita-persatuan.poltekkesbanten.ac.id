@@ -90,6 +90,10 @@ class DwpCatalogProduct extends Model
 
     public function displayPrice(): string
     {
+        if ($this->isTogaProduct()) {
+            return 'Bank BRI · BritAma Bisnis';
+        }
+
         if (filled($this->price_text)) {
             return $this->price_text;
         }
@@ -167,8 +171,8 @@ class DwpCatalogProduct extends Model
         $product = new self([
             'name' => 'Paket Baju Toga Wisuda Poltekkes Kemenkes Banten',
             'slug' => 'paket-baju-toga-wisuda-poltekkes-kemenkes-banten',
-            'description' => 'Paket baju toga wisuda resmi untuk mahasiswa Poltekkes Kemenkes Banten Tahun 2026/2027. Pemesanan dan informasi pembayaran dapat menghubungi Tim Sekretariat DWP Poltekkes Kemenkes Banten.',
-            'price_text' => 'Hubungi Tim Sekretariat',
+            'description' => 'Paket baju toga wisuda resmi untuk mahasiswa Poltekkes Kemenkes Banten Tahun 2026/2027. Pembayaran ke rekening BRI BritAma Bisnis DWP POLTEKES BANTEN, kemudian unggah bukti pembayaran untuk diverifikasi Tim Sekretariat DWP Poltekkes Kemenkes Banten.',
+            'price_text' => 'Bank BRI · BritAma Bisnis',
             'unit' => 'paket',
             'image_path' => 'src/img/wisuda/Baju-Toga-Mahasiswa.jpeg',
             'contact_name' => config('dwp.contact_name'),

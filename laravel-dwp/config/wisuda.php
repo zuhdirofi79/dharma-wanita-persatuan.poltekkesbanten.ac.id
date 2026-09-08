@@ -1,26 +1,21 @@
 <?php
 
 return [
-    'payment_title' => env('WISUDA_PAYMENT_TITLE', 'Informasi Pembayaran Toga Wisuda'),
-    'payment_instruction' => env(
-        'WISUDA_PAYMENT_INSTRUCTION',
-        'Untuk informasi rekening pembayaran, silakan hubungi Tim Sekretariat DWP Poltekkes Kemenkes Banten. Setelah mendapat informasi rekening dan melakukan pembayaran, unggah bukti pembayaran di halaman ini.'
-    ),
-    'payment_account_name' => env('WISUDA_PAYMENT_ACCOUNT_NAME'),
-    'payment_account_number' => env('WISUDA_PAYMENT_ACCOUNT_NUMBER'),
-    'payment_bank_name' => env('WISUDA_PAYMENT_BANK_NAME'),
+    'payment_title' => 'Informasi Pembayaran Toga Wisuda',
+    'payment_instruction' => 'Silakan melakukan pembayaran ke rekening berikut, kemudian unggah bukti pembayaran untuk diverifikasi oleh Tim Sekretariat DWP Poltekkes Kemenkes Banten.',
+    'payment_account_name' => 'DWP POLTEKES BANTEN',
+    'payment_account_number' => '008401004160565',
+    'payment_bank_name' => 'Bank BRI / BRI BritAma Bisnis',
+    'payment_account_type' => 'Britama Bisnis',
+    'payment_branch' => 'KC Serang',
 
-    'contact_name' => env('WISUDA_CONTACT_NAME', 'Dias Arliadini (Tim Sekretariat DWP Poltekkes Kemenkes Banten)'),
-    'contact_phone_primary' => env('WISUDA_CONTACT_PHONE_PRIMARY', '+62 851-8777-8838'),
-    'contact_phone_secondary' => env('WISUDA_CONTACT_PHONE_SECONDARY', '+62 877-4112-1505'),
-    'contact_wa_primary' => env(
-        'WISUDA_CONTACT_WA_PRIMARY',
-        'https://api.whatsapp.com/send/?phone=6285187778838&text&type=phone_number&app_absent=0'
-    ),
-    'contact_wa_secondary' => env(
-        'WISUDA_CONTACT_WA_SECONDARY',
-        'https://api.whatsapp.com/send/?phone=6287741121505&text&type=phone_number&app_absent=0'
-    ),
+    'contact_name' => 'Tim Sekretariat DWP Poltekkes Kemenkes Banten',
+    'contact_primary_name' => 'Dias Arliadini',
+    'contact_secondary_name' => 'Putri Ratna Dewi',
+    'contact_phone_primary' => '+62 895-0839-4483',
+    'contact_phone_secondary' => '+62 877-4112-1505',
+    'contact_wa_primary' => 'https://api.whatsapp.com/send/?phone=6289508394483&text&type=phone_number&app_absent=0',
+    'contact_wa_secondary' => 'https://api.whatsapp.com/send/?phone=6287741121505&text&type=phone_number&app_absent=0',
 
     'event_year' => '2026/2027',
     'event_date' => '30 September 2026',

@@ -11,14 +11,15 @@
             Pemesanan atribut, batik, pernak-pernik, dan toga wisuda melalui Dharma Wanita Persatuan Poltekkes Kemenkes Banten.
         </p>
         <p class="dwp-intro-contact">
-            Pemesanan: Dias Arliadini (Tim Sekretariat DWP Poltekkes Kemenkes Banten)<br>
-            <a href="{{ $dwp['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer">+62 851-8777-8838</a>
-            atau
-            <a href="{{ $dwp['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer">+62 877-4112-1505</a>
+            Kontak Sekretariat DWP:<br>
+            Dias Arliadini (<a href="{{ $dwp['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer">{{ $dwp['contact_phone_primary'] }}</a>)<br>
+            Putri Ratna Dewi (<a href="{{ $dwp['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer">{{ $dwp['contact_phone_secondary'] }}</a>)
         </p>
         <div class="dwp-hero-actions">
             <a href="#produk-pilihan" class="dwp-btn dwp-btn-orange">Lihat Produk Pilihan</a>
-            <a href="{{ route('wisuda.index') }}" class="dwp-btn dwp-btn-white">Pesan Toga Wisuda</a>
+            <a href="{{ route('wisuda.index') }}" class="dwp-btn dwp-btn-primary">Pesan Toga Wisuda</a>
+            <a href="{{ $dwp['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="dwp-btn dwp-btn-white">Hubungi Dias Arliadini</a>
+            <a href="{{ $dwp['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer" class="dwp-btn dwp-btn-outline">Hubungi Putri Ratna Dewi</a>
         </div>
     </div>
 </section>

@@ -14,13 +14,15 @@
                 <p>Pelaksanaan: <strong>{{ $config['event_date'] }}</strong></p>
                 <p>Lokasi: <strong>{{ $config['event_location'] }}</strong></p>
                 <p>{{ $config['order_deadline_note'] }}</p>
-                <p>Isi data dengan benar. Setelah submit, Anda mendapat kode pesanan. Untuk info rekening, hubungi Tim Sekretariat DWP Poltekkes Kemenkes Banten lalu unggah bukti pembayaran.</p>
+                <p>Isi data dengan benar. Setelah submit, Anda mendapat kode pesanan. Lakukan pembayaran ke rekening BRI BritAma Bisnis DWP POLTEKES BANTEN, lalu unggah bukti pembayaran.</p>
+                @include('partials.dwp-payment-card')
                 <div class="wisuda-contact-box" style="margin-top:1rem;">
-                    <strong>{{ $config['contact_name'] }}</strong>
-                    <p style="margin:0.35rem 0;">{{ $config['contact_phone_primary'] }}</p>
+                    <strong>Kontak Sekretariat DWP:</strong>
+                    <p style="margin:0.35rem 0;">Dias Arliadini ({{ $config['contact_phone_primary'] }})</p>
+                    <p style="margin:0.35rem 0;">Putri Ratna Dewi ({{ $config['contact_phone_secondary'] }})</p>
                     <div class="wisuda-hero-actions">
-                        <a href="{{ $config['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="btn-sm btn-green">Hubungi Tim Sekretariat</a>
-                        <a href="{{ $config['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer" class="btn-sm btn-blue">Kontak Alternatif</a>
+                        <a href="{{ $config['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="btn-sm btn-green">Hubungi Dias Arliadini</a>
+                        <a href="{{ $config['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer" class="btn-sm btn-blue">Hubungi Putri Ratna Dewi</a>
                     </div>
                 </div>
                 <a href="{{ route('wisuda.index') }}" class="btn-sm btn-gray" style="margin-top:0.75rem;display:inline-block;">Kembali ke Halaman Wisuda</a>
@@ -119,6 +121,8 @@
                         <input type="number" name="captcha_answer" id="captcha_answer" class="form-control" required>
                         <input type="hidden" name="captcha_expected" value="{{ $captcha['expected'] }}">
                     </div>
+                    @include('partials.dwp-payment-card')
+                    <p class="dwp-pay-hint">Pastikan nama pemesan sesuai dengan data yang diisi agar verifikasi lebih mudah.</p>
                     <div class="form-group">
                         <label style="display:flex;align-items:flex-start;gap:0.5rem;font-weight:500;">
                             <input type="checkbox" name="confirm" value="1" {{ old('confirm') ? 'checked' : '' }} style="margin-top:0.25rem;" required>

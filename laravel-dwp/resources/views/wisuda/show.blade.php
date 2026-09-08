@@ -19,13 +19,13 @@
             <div class="wisuda-status-waiting">
                 <strong>Status:</strong>
                 @if($order->payment_status === 'unpaid')
-                    Menunggu informasi pembayaran
+                    Menunggu pembayaran ke rekening BRI BritAma Bisnis
                 @else
                     {{ $order->paymentStatusLabel() }}
                 @endif
-                <br>
-                Untuk informasi rekening pembayaran, silakan hubungi Tim Sekretariat DWP Poltekkes Kemenkes Banten.
             </div>
+
+            @include('partials.dwp-payment-card')
 
             <div class="wisuda-order-summary">
                 <p><strong>Nama:</strong> {{ $order->student_name }}</p>
@@ -47,10 +47,10 @@
                     Lanjut ke Upload Bukti Pembayaran
                 </a>
                 <a href="{{ $config['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="btn-sm btn-green">
-                    Hubungi Tim Sekretariat
+                    Hubungi Dias Arliadini
                 </a>
                 <a href="{{ $config['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer" class="btn-sm btn-blue">
-                    Kontak Alternatif
+                    Hubungi Putri Ratna Dewi
                 </a>
                 <a href="{{ route('wisuda.index') }}" class="btn-sm btn-gray">Kembali ke Wisuda</a>
             </div>

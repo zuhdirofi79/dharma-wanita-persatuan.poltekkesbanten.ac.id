@@ -1,8 +1,11 @@
-/* DWP marketplace — hijau Kemenkes */
+/* DWP marketplace — peach header, hijau Kemenkes untuk aksen */
 :root {
     --dwp-green: #00856F;
     --dwp-green-dark: #006B5B;
     --dwp-green-soft: #E8F7F4;
+    --dwp-peach: #FFD3AC;
+    --dwp-peach-soft: #FFF4E8;
+    --dwp-ink: #0F172A;
     --dwp-orange: #FF6A00;
     --dwp-text: #1f2937;
     --dwp-muted: #6b7280;
@@ -14,13 +17,14 @@
 .dwp-body {
     background: var(--dwp-bg);
     color: var(--dwp-text);
+    overflow-x: hidden;
 }
 
 .dwp-header,
 .site-header.dwp-header {
-    background: var(--dwp-green) !important;
-    border-bottom: 0 !important;
-    box-shadow: 0 6px 18px rgba(0, 107, 91, 0.18);
+    background: var(--dwp-peach) !important;
+    border-bottom: 1px solid #f0c89a !important;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -43,7 +47,7 @@
     max-width: none !important;
     overflow: visible !important;
     text-decoration: none;
-    color: #fff;
+    color: var(--dwp-ink);
     flex: 0 1 auto !important;
 }
 
@@ -72,13 +76,13 @@
 .dwp-brand-title {
     font-size: 18px;
     font-weight: 800;
-    color: #fff !important;
+    color: var(--dwp-ink) !important;
 }
 
 .dwp-brand-subtitle {
     font-size: 12px;
     font-weight: 600;
-    color: #d9f5ef !important;
+    color: var(--dwp-green-dark) !important;
     margin-top: 2px;
 }
 
@@ -86,8 +90,8 @@
     display: none;
     width: 44px;
     height: 44px;
-    border: 1px solid rgba(255, 255, 255, 0.45);
-    background: transparent;
+    border: 1px solid #d9a87a;
+    background: #fff;
     border-radius: 10px;
     padding: 10px 11px;
     cursor: pointer;
@@ -98,7 +102,7 @@
 .dwp-nav-toggle span {
     display: block;
     height: 2px;
-    background: #fff;
+    background: var(--dwp-ink);
     border-radius: 2px;
 }
 
@@ -112,36 +116,53 @@
 
 .dwp-nav .site-nav-link,
 .dwp-header .site-nav-link {
-    color: #fff !important;
+    color: var(--dwp-ink) !important;
     font-weight: 700;
     font-size: 14px;
 }
 
 .dwp-nav .site-nav-link.active,
 .dwp-nav .site-nav-link:hover {
-    color: #ffe7d4 !important;
+    color: var(--dwp-green-dark) !important;
 }
 
 .dwp-header .site-admin-login {
-    border: 1px solid #fff !important;
-    color: #fff !important;
-    background: transparent;
+    border: 1px solid var(--dwp-green-dark) !important;
+    color: var(--dwp-green-dark) !important;
+    background: #fff;
     border-radius: 999px;
 }
 
 .dwp-header .site-admin-login:hover {
-    background: #fff !important;
-    color: var(--dwp-green-dark) !important;
+    background: var(--dwp-green-dark) !important;
+    color: #fff !important;
 }
 
 .dwp-main {
     min-height: 50vh;
 }
 
-.dwp-hero {
-    background: linear-gradient(135deg, #00856F 0%, #006B5B 55%, #0a7d6c 100%);
-    color: #fff;
+.dwp-hero,
+.dwp-wisuda-hero {
+    background: var(--dwp-peach);
+    color: var(--dwp-ink);
     padding: 48px 0 40px;
+}
+
+.dwp-wisuda-hero {
+    padding: 32px 0 28px;
+}
+
+.dwp-wisuda-hero-title {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--dwp-ink);
+}
+
+.dwp-body .page-title-bar {
+    background: var(--dwp-peach) !important;
+    color: var(--dwp-ink) !important;
 }
 
 .dwp-hero-inner {
@@ -153,7 +174,7 @@
     text-transform: uppercase;
     font-size: 12px;
     font-weight: 800;
-    color: #b7efe4;
+    color: var(--dwp-green-dark);
     margin: 0 0 8px;
 }
 
@@ -166,15 +187,19 @@
     font-weight: 800;
 }
 
+.dwp-hero h1 {
+    color: var(--dwp-ink);
+}
+
 .dwp-hero .dwp-intro-text,
 .dwp-hero .dwp-intro-contact {
     max-width: 720px;
     margin: 12px 0 0;
-    color: #e7f8f4;
+    color: #334155;
 }
 
 .dwp-hero a {
-    color: #fff;
+    color: var(--dwp-green-dark);
     font-weight: 700;
 }
 
@@ -185,6 +210,11 @@
     flex-wrap: wrap;
     gap: 10px;
     margin-top: 20px;
+}
+
+.dwp-contact-actions .dwp-btn,
+.dwp-secretariat .dwp-btn {
+    min-width: min(100%, 220px);
 }
 
 .dwp-btn {
@@ -599,7 +629,14 @@
         gap: 8px;
     }
 
-    .dwp-product-actions {
+    .dwp-product-actions,
+    .dwp-contact-actions,
+    .dwp-hero-actions {
         flex-direction: column;
+    }
+
+    .dwp-contact-actions .dwp-btn,
+    .dwp-hero-actions .dwp-btn {
+        width: 100%;
     }
 }
