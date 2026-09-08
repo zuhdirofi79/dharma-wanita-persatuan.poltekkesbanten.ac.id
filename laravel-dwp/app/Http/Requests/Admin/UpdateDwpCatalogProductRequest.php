@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\DwpCatalogProduct;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -10,6 +11,17 @@ class UpdateDwpCatalogProductRequest extends FormRequest
     public function authorize(): bool
     {
         return $this->user()?->canManageCatalog() ?? false;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'price' => DwpCatalogProduct::normalizePriceInput($this->input('price')),
+        ]);
+
+        if (DwpCatalogProduct::priceTextLooksLikePayment($this->input('price_text'))) {
+            $this->merge(['price_text' => null]);
+        }
     }
 
     public function rules(): array

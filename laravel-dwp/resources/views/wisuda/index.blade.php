@@ -57,6 +57,7 @@
 
     $defaultFile = 'Baju-Toga-Mahasiswa.jpeg';
     $defaultSrc = asset('src/img/wisuda/'.$defaultFile);
+    $togaProduct = $togaProduct ?? \App\Models\DwpCatalogProduct::canonicalToga();
 @endphp
 
 <div class="dwp-wisuda-hero">
@@ -114,7 +115,10 @@
                     <p class="wisuda-rating-line">★★★★★ 5.0 | Produk resmi Wisuda Poltekkes Kemenkes Banten</p>
 
                     <div class="wisuda-price-box">
-                        <p class="wisuda-price-main">Pembayaran ke rekening BRI BritAma Bisnis</p>
+                        <p class="wisuda-price-main">{{ $togaProduct->displayPrice() }}</p>
+                        @if($togaProduct->unit)
+                            <p class="wisuda-price-note">Satuan: {{ $togaProduct->unit }}</p>
+                        @endif
                         @include('partials.dwp-payment-card')
                     </div>
 
@@ -237,10 +241,13 @@
                 <h2>Checkout Pemesanan Toga</h2>
                 <p style="margin:0;color:#6b7280;">Lengkapi data pemesanan. Setelah submit, Anda mendapat kode pesanan dan dapat mengunggah bukti pembayaran ke rekening BRI BritAma Bisnis DWP POLTEKES BANTEN.</p>
 
-                <div class="wisuda-checkout-summary" id="wisudaCheckoutSummary">
+                <div class="wisuda-checkout-summary" id="wisudaCheckoutSummary"
+                     data-unit-price="{{ $togaProduct->unitPrice() }}">
                     Ringkasan pilihan: <strong id="summaryProdi">Belum dipilih</strong> ·
                     Ukuran <strong id="summarySize">All Size</strong> ·
-                    Jumlah <strong id="summaryQty">1</strong>
+                    Jumlah <strong id="summaryQty">1</strong><br>
+                    Harga satuan: <strong id="summaryUnitPrice">{{ $togaProduct->displayPrice() }}</strong> ·
+                    Perkiraan total: <strong id="summaryTotal">{{ $togaProduct->estimatedTotal((int) old('quantity', 1)) }}</strong>
                 </div>
 
                 @if($errors->any())
@@ -371,6 +378,9 @@
     var summaryProdi = document.getElementById('summaryProdi');
     var summarySize = document.getElementById('summarySize');
     var summaryQty = document.getElementById('summaryQty');
+    var summaryTotal = document.getElementById('summaryTotal');
+    var checkoutSummary = document.getElementById('wisudaCheckoutSummary');
+    var unitPrice = checkoutSummary ? parseFloat(checkoutSummary.getAttribute('data-unit-price') || '0') : 0;
     var prodiNote = document.getElementById('wisudaProdiNote');
     var studySelect = document.getElementById('study_program_id');
     var selectedProdi = '';
@@ -405,12 +415,19 @@
         if (found) studySelect.value = found.value;
     }
 
+    function formatRupiah(amount) {
+        var n = Math.round(Number(amount) || 0);
+        return 'Rp. ' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+
     function updateSummary() {
+        var qty = qtyInput ? qtyInput.value : '1';
         if (summaryProdi) summaryProdi.textContent = selectedProdi || 'Belum dipilih';
         if (summarySize) summarySize.textContent = 'All Size';
-        if (summaryQty) summaryQty.textContent = qtyInput ? qtyInput.value : '1';
+        if (summaryQty) summaryQty.textContent = qty;
+        if (summaryTotal) summaryTotal.textContent = formatRupiah(unitPrice * (parseInt(qty, 10) || 1));
         if (formSize) formSize.value = 'All Size';
-        if (formQty) formQty.value = qtyInput ? qtyInput.value : '1';
+        if (formQty) formQty.value = qty;
     }
 
     prodiButtons.forEach(function (btn) {

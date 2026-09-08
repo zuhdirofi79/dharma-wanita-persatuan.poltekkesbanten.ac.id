@@ -40,13 +40,22 @@
         </div>
 
         <div class="form-group">
-            <label for="price">Harga (angka, opsional)</label>
-            <input type="number" name="price" id="price" class="form-control" min="0" step="0.01" value="{{ old('price', $product->price) }}">
+            <label for="price">Harga</label>
+            @php
+                $priceValue = old('price', $product->price);
+                if (is_numeric($priceValue) && (float) $priceValue == (int) $priceValue) {
+                    $priceValue = (int) $priceValue;
+                }
+            @endphp
+            <input type="text" name="price" id="price" class="form-control" inputmode="decimal" placeholder="contoh 200000" value="{{ $priceValue }}">
+            <small style="color:#6b7280;">Isi angka saja, tanpa wajib menulis Rp. Contoh: 200000. Jika diketik Rp. 200.000, sistem akan membersihkan format sebelum disimpan. Harga yang tampil di website saat ini: <strong>{{ $product->exists ? $product->displayPrice() : 'Rp. 200.000 (default toga jika harga kosong)' }}</strong></small>
+            @error('price')<small style="color:#dc2626;">{{ $message }}</small>@enderror
         </div>
 
         <div class="form-group">
-            <label for="price_text">Teks Harga (opsional, contoh: Bank BRI · BritAma Bisnis)</label>
-            <input type="text" name="price_text" id="price_text" class="form-control" value="{{ old('price_text', $product->price_text) }}">
+            <label for="price_text">Teks Harga (opsional, jika harga angka dikosongkan)</label>
+            <input type="text" name="price_text" id="price_text" class="form-control" value="{{ old('price_text', \App\Models\DwpCatalogProduct::priceTextLooksLikePayment($product->price_text) ? '' : $product->price_text) }}" placeholder="contoh: Hubungi Tim Sekretariat">
+            <small style="color:#6b7280;">Jangan isi nama bank/rekening di sini. Informasi pembayaran tampil terpisah pada card rekening.</small>
         </div>
 
         <div class="form-group">

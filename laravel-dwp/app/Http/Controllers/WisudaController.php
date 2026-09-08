@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreGraduationTogaOrderRequest;
 use App\Http\Requests\UploadWisudaPaymentProofRequest;
+use App\Models\DwpCatalogProduct;
 use App\Models\GraduationTogaOrder;
 use App\Models\StudyProgram;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ class WisudaController extends Controller
             'config' => config('wisuda'),
             'studyPrograms' => StudyProgram::active()->orderBy('name')->get(),
             'captcha' => $this->generateCaptcha(),
+            'togaProduct' => DwpCatalogProduct::canonicalToga(),
         ]);
     }
 
@@ -30,6 +32,7 @@ class WisudaController extends Controller
             'captcha' => $this->generateCaptcha(),
             'config' => config('wisuda'),
             'prodiHint' => $prodiHint,
+            'togaProduct' => DwpCatalogProduct::canonicalToga(),
         ]);
     }
 
@@ -72,6 +75,7 @@ class WisudaController extends Controller
         return view('wisuda.show', [
             'order' => $order,
             'config' => config('wisuda'),
+            'togaProduct' => DwpCatalogProduct::canonicalToga(),
         ]);
     }
 
@@ -82,6 +86,7 @@ class WisudaController extends Controller
         return view('wisuda.payment', [
             'order' => $order,
             'config' => config('wisuda'),
+            'togaProduct' => DwpCatalogProduct::canonicalToga(),
         ]);
     }
 

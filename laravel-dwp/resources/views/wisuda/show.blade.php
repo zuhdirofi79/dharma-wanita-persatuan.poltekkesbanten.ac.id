@@ -3,6 +3,9 @@
 @section('title', 'Detail Pesanan Toga - '.$order->order_code)
 
 @section('content')
+@php
+    $togaProduct = $togaProduct ?? \App\Models\DwpCatalogProduct::canonicalToga();
+@endphp
 <div class="page-title-bar">Detail Pesanan Toga Wisuda</div>
 
 <section class="container form-layout">
@@ -38,6 +41,8 @@
                 <p><strong>Ukuran Toga:</strong> {{ $order->toga_size }}</p>
                 <p><strong>Catatan Ukuran:</strong> {{ $order->size_note ?: '-' }}</p>
                 <p><strong>Jumlah:</strong> {{ $order->quantity }}</p>
+                <p><strong>Harga satuan:</strong> {{ $togaProduct->displayPrice() }}</p>
+                <p><strong>Perkiraan total:</strong> {{ $togaProduct->estimatedTotal((int) $order->quantity) }}</p>
                 <p><strong>Status Pesanan:</strong> {{ $order->statusLabel() }}</p>
                 <p><strong>Status Pembayaran:</strong> {{ $order->paymentStatusLabel() }}</p>
             </div>

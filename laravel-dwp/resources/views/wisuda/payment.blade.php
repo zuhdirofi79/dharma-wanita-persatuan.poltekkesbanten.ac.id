@@ -3,6 +3,9 @@
 @section('title', 'Pembayaran Toga Wisuda - '.$order->order_code)
 
 @section('content')
+@php
+    $togaProduct = $togaProduct ?? \App\Models\DwpCatalogProduct::canonicalToga();
+@endphp
 <div class="page-title-bar">Pembayaran Toga Wisuda</div>
 
 <section class="container form-layout">
@@ -32,6 +35,8 @@
                 <p><strong>Tahun Lulus:</strong> {{ $order->graduation_year ?: '-' }}</p>
                 <p><strong>Ukuran Toga:</strong> {{ $order->toga_size }}</p>
                 <p><strong>Jumlah:</strong> {{ $order->quantity }}</p>
+                <p><strong>Harga satuan:</strong> {{ $togaProduct->displayPrice() }}</p>
+                <p><strong>Perkiraan total:</strong> {{ $togaProduct->estimatedTotal((int) $order->quantity) }}</p>
                 <p><strong>Status Pembayaran:</strong>
                     @if($order->payment_status === 'unpaid')
                         Menunggu pembayaran ke rekening BRI BritAma Bisnis

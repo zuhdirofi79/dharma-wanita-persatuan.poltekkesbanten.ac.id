@@ -101,7 +101,7 @@ class CatalogProductController extends Controller
         $data['slug'] = $data['slug'] ?: Str::slug($data['name']);
         $data['is_active'] = $request->boolean('is_active');
         $data['is_featured'] = $request->boolean('is_featured');
-        $data['price'] = $data['price'] !== null && $data['price'] !== '' ? $data['price'] : null;
+        $data['price'] = DwpCatalogProduct::normalizePriceInput($data['price'] ?? null);
 
         return $data;
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\DwpCatalogProduct;
 use App\Models\GraduationTogaOrder;
 use App\Models\StudyProgram;
 use Illuminate\Http\Request;
@@ -35,6 +36,7 @@ class WisudaOrderController extends Controller
         return view('admin.wisuda.orders.show', [
             'order' => $order,
             'config' => config('wisuda'),
+            'togaProduct' => DwpCatalogProduct::canonicalToga(),
         ]);
     }
 

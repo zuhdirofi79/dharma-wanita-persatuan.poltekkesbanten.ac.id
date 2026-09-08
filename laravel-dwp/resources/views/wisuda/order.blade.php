@@ -3,6 +3,9 @@
 @section('title', 'Pesan Toga Wisuda - Poltekkes Kemenkes Banten')
 
 @section('content')
+@php
+    $togaProduct = $togaProduct ?? \App\Models\DwpCatalogProduct::canonicalToga();
+@endphp
 <div class="page-title-bar">Pemesanan Toga Wisuda</div>
 
 <section class="container form-layout">
@@ -15,6 +18,7 @@
                 <p>Lokasi: <strong>{{ $config['event_location'] }}</strong></p>
                 <p>{{ $config['order_deadline_note'] }}</p>
                 <p>Isi data dengan benar. Setelah submit, Anda mendapat kode pesanan. Lakukan pembayaran ke rekening BRI BritAma Bisnis DWP POLTEKES BANTEN, lalu unggah bukti pembayaran.</p>
+                <p><strong>Harga paket:</strong> {{ $togaProduct->displayPrice() }}</p>
                 @include('partials.dwp-payment-card')
                 <div class="wisuda-contact-box" style="margin-top:1rem;">
                     <strong>Kontak Sekretariat DWP:</strong>

@@ -5,10 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class DwpCatalogProduct extends Model
 {
+    public const TOGA_DEFAULT_PRICE = 200000;
+
     protected $fillable = [
         'dwp_catalog_category_id',
         'name',
@@ -40,6 +43,10 @@ class DwpCatalogProduct extends Model
         static::saving(function (self $product) {
             if (! filled($product->slug)) {
                 $product->slug = Str::slug($product->name);
+            }
+
+            if (self::priceTextLooksLikePayment($product->price_text)) {
+                $product->price_text = null;
             }
         });
     }
@@ -88,26 +95,145 @@ class DwpCatalogProduct extends Model
         return asset('storage/'.$path);
     }
 
+    public static function formatRupiah(float|int|string|null $amount): string
+    {
+        return 'Rp. '.number_format((float) $amount, 0, ',', '.');
+    }
+
+    public static function priceTextLooksLikePayment(?string $text): bool
+    {
+        $haystack = Str::lower(trim((string) $text));
+
+        if ($haystack === '') {
+            return false;
+        }
+
+        foreach (['bank', 'bri', 'britama', 'rekening', 'nomor rekening', 'dwp poltekes banten'] as $needle) {
+            if (str_contains($haystack, $needle)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static function normalizePriceInput(mixed $value): ?float
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $raw = trim((string) $value);
+
+        if ($raw === '') {
+            return null;
+        }
+
+        if (is_numeric($raw)) {
+            return round((float) $raw, 2);
+        }
+
+        $digits = preg_replace('/[^\d]/', '', $raw);
+
+        return $digits === '' ? null : (float) $digits;
+    }
+
+    public function numericPrice(): ?float
+    {
+        if ($this->price === null || (float) $this->price <= 0) {
+            return null;
+        }
+
+        return (float) $this->price;
+    }
+
+    public function unitPrice(): float
+    {
+        $price = $this->numericPrice();
+
+        if ($price !== null) {
+            return $price;
+        }
+
+        return $this->isTogaProduct() ? (float) self::TOGA_DEFAULT_PRICE : 0.0;
+    }
+
     public function displayPrice(): string
     {
+        $price = $this->numericPrice();
+
+        if ($price !== null) {
+            $label = self::formatRupiah($price);
+
+            if (! $this->isTogaProduct() && filled($this->unit) && $this->unit !== '-') {
+                $label .= ' / '.$this->unit;
+            }
+
+            return $label;
+        }
+
+        $text = trim((string) $this->price_text);
+
+        if ($text !== '' && ! self::priceTextLooksLikePayment($text)) {
+            return $text;
+        }
+
         if ($this->isTogaProduct()) {
-            return 'Bank BRI · BritAma Bisnis';
+            return self::formatRupiah(self::TOGA_DEFAULT_PRICE);
         }
 
-        if (filled($this->price_text)) {
-            return $this->price_text;
+        return 'Hubungi Tim Sekretariat';
+    }
+
+    public function estimatedTotal(int $quantity = 1): string
+    {
+        $qty = max(1, $quantity);
+
+        return self::formatRupiah($this->unitPrice() * $qty);
+    }
+
+    public static function canonicalToga(): self
+    {
+        if (! Schema::hasTable((new static)->getTable())) {
+            return static::togaFallback();
         }
 
-        if ($this->price === null) {
-            return 'Hubungi Tim Sekretariat';
-        }
+        $product = static::query()
+            ->with('category')
+            ->whereIn('slug', [
+                'paket-baju-toga-wisuda-poltekkes-kemenkes-banten',
+                'baju-toga-wisuda-mahasiswa-mahasiswi',
+            ])
+            ->orderByRaw("CASE WHEN slug = 'paket-baju-toga-wisuda-poltekkes-kemenkes-banten' THEN 0 ELSE 1 END")
+            ->first();
 
-        $formatted = number_format((float) $this->price, 0, ',', '.');
-        $unit = filled($this->unit) && $this->unit !== '-'
-            ? ' / '.$this->unit
-            : '';
+        return $product ?: static::togaFallback();
+    }
 
-        return 'Rp '.$formatted.$unit;
+    public static function normalizeStoredTogaPrices(): int
+    {
+        $updated = 0;
+
+        static::query()->get()->each(function (self $product) use (&$updated) {
+            $dirty = false;
+
+            if (self::priceTextLooksLikePayment($product->price_text)) {
+                $product->price_text = null;
+                $dirty = true;
+            }
+
+            if ($product->isTogaProduct() && $product->numericPrice() === null) {
+                $product->price = self::TOGA_DEFAULT_PRICE;
+                $dirty = true;
+            }
+
+            if ($dirty) {
+                $product->save();
+                $updated++;
+            }
+        });
+
+        return $updated;
     }
 
     public function shortDescription(int $limit = 90): string
@@ -171,8 +297,9 @@ class DwpCatalogProduct extends Model
         $product = new self([
             'name' => 'Paket Baju Toga Wisuda Poltekkes Kemenkes Banten',
             'slug' => 'paket-baju-toga-wisuda-poltekkes-kemenkes-banten',
-            'description' => 'Paket baju toga wisuda resmi untuk mahasiswa Poltekkes Kemenkes Banten Tahun 2026/2027. Pembayaran ke rekening BRI BritAma Bisnis DWP POLTEKES BANTEN, kemudian unggah bukti pembayaran untuk diverifikasi Tim Sekretariat DWP Poltekkes Kemenkes Banten.',
-            'price_text' => 'Bank BRI · BritAma Bisnis',
+            'description' => 'Paket baju toga wisuda resmi untuk mahasiswa Poltekkes Kemenkes Banten Tahun 2026/2027.',
+            'price' => self::TOGA_DEFAULT_PRICE,
+            'price_text' => null,
             'unit' => 'paket',
             'image_path' => 'src/img/wisuda/Baju-Toga-Mahasiswa.jpeg',
             'contact_name' => config('dwp.contact_name'),

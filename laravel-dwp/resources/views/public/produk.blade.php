@@ -20,8 +20,8 @@
             @endif
             <h1>{{ $product->name }}</h1>
             <p class="dwp-product-price dwp-detail-price">{{ $product->displayPrice() }}</p>
-            @if($product->unit)
-                <p class="dwp-muted">Satuan: {{ $product->unit }}</p>
+            @if($product->unit || $product->isTogaProduct())
+                <p class="dwp-muted">Satuan: {{ $product->unit ?: 'paket' }}</p>
             @endif
             <div class="dwp-detail-copy">
                 {!! nl2br(e($product->description ?: $product->shortDescription(240))) !!}

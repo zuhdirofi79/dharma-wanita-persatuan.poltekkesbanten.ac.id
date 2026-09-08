@@ -50,23 +50,34 @@ class DwpCatalogSeeder extends Seeder
         $togaImage = $this->existingPublicPath('src/img/wisuda/Baju-Toga-Mahasiswa.jpeg')
             ?: 'src/img/wisuda/Baju-Toga-Mahasiswa.jpeg';
 
-        DwpCatalogProduct::updateOrCreate(
-            ['slug' => 'paket-baju-toga-wisuda-poltekkes-kemenkes-banten'],
-            [
-                'dwp_catalog_category_id' => $categoryMap['wisuda']->id,
-                'name' => 'Paket Baju Toga Wisuda Poltekkes Kemenkes Banten',
-                'description' => 'Paket baju toga wisuda resmi untuk mahasiswa Poltekkes Kemenkes Banten Tahun 2026/2027. Pembayaran ke rekening BRI BritAma Bisnis DWP POLTEKES BANTEN, kemudian unggah bukti pembayaran untuk diverifikasi Tim Sekretariat DWP Poltekkes Kemenkes Banten.',
-                'price' => null,
-                'price_text' => 'Bank BRI · BritAma Bisnis',
-                'unit' => 'paket',
-                'image_path' => $togaImage,
-                'contact_name' => $contactName,
-                'contact_phone' => $contactPhone,
-                'sort_order' => 1,
-                'is_featured' => true,
-                'is_active' => true,
-            ]
-        );
+        $toga = DwpCatalogProduct::firstOrNew([
+            'slug' => 'paket-baju-toga-wisuda-poltekkes-kemenkes-banten',
+        ]);
+
+        $toga->fill([
+            'dwp_catalog_category_id' => $categoryMap['wisuda']->id,
+            'name' => 'Paket Baju Toga Wisuda Poltekkes Kemenkes Banten',
+            'description' => 'Paket baju toga wisuda resmi untuk mahasiswa Poltekkes Kemenkes Banten Tahun 2026/2027.',
+            'unit' => 'paket',
+            'image_path' => $toga->image_path ?: $togaImage,
+            'contact_name' => $contactName,
+            'contact_phone' => $contactPhone,
+            'sort_order' => 1,
+            'is_featured' => true,
+            'is_active' => true,
+        ]);
+
+        if ($toga->numericPrice() === null) {
+            $toga->price = DwpCatalogProduct::TOGA_DEFAULT_PRICE;
+        }
+
+        if (DwpCatalogProduct::priceTextLooksLikePayment($toga->price_text)) {
+            $toga->price_text = null;
+        }
+
+        $toga->save();
+
+        DwpCatalogProduct::normalizeStoredTogaPrices();
 
         $samples = [
             ['category' => 'batik', 'name' => 'Baju Batik Jadi', 'price_text' => 'Hubungi Tim Sekretariat', 'unit' => 'pcs', 'sort_order' => 1],
