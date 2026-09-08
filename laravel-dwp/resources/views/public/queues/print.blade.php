@@ -79,7 +79,7 @@
     </div>
 
     <div class="ticket">
-        <img src="{{ asset('src/img/logo.png') }}" alt="Logo Poltekkes Kemenkes Banten" class="logo">
+        <img src="{{ asset('src/img/logo-dwp.jpeg') }}" alt="Logo Dharma Wanita Persatuan Poltekkes Kemenkes Banten" class="logo">
         <h1 class="title">Layanan Akademik<br>Poltekkes Kemenkes Banten</h1>
         <p class="subtitle">Nomor Antrean</p>
         <div class="code">{{ $queue->queue_code }}</div>

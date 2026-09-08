@@ -4,7 +4,7 @@
 <footer class="dwp-footer">
     <div class="container dwp-footer-grid">
         <div class="dwp-footer-brand">
-            <img src="{{ asset('src/img/logo.png') }}" alt="Logo Poltekkes Kemenkes Banten" class="dwp-footer-logo">
+            <img src="{{ asset('src/img/logo-dwp.jpeg') }}" alt="Logo Dharma Wanita Persatuan Poltekkes Kemenkes Banten" class="dwp-footer-logo site-logo">
             <p class="dwp-footer-title">Dharma Wanita Persatuan</p>
             <p class="dwp-footer-sub">Poltekkes Kemenkes Banten</p>
         </div>

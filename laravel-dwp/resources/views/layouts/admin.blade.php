@@ -4,12 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin DWP')</title>
+    <link rel="icon" href="{{ asset('src/img/logo-dwp.jpeg') }}" type="image/jpeg">
     <link rel="stylesheet" href="{{ env('CSS_URL', asset('css/akademik.css')) }}">
 </head>
 <body class="admin-body">
     <div class="admin-shell">
         <aside class="admin-sidebar">
-            <div class="admin-sidebar-brand">Admin DWP</div>
+            <div class="admin-sidebar-brand" style="display:flex;align-items:center;gap:12px;">
+                <img src="{{ asset('src/img/logo-dwp.jpeg') }}" alt="Logo Dharma Wanita Persatuan Poltekkes Kemenkes Banten" class="site-logo" style="height:44px;max-width:58px;width:auto;object-fit:contain;background:#fff;border-radius:8px;padding:2px;">
+                <span>Admin DWP</span>
+            </div>
             <p class="admin-sidebar-user">{{ auth()->user()->name }}<br><small>{{ auth()->user()->roleLabel() }}</small></p>
             <nav class="admin-sidebar-nav">
                 <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Dashboard</a>

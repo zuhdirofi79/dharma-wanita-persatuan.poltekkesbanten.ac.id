@@ -4,7 +4,7 @@
 <header class="site-header dwp-header">
     <div class="container site-header-inner dwp-header-inner">
         <a href="{{ route('beranda') }}" class="dwp-brand" aria-label="Beranda Dharma Wanita Persatuan Poltekkes Kemenkes Banten">
-            <img src="{{ asset('src/img/logo.png') }}" alt="Logo Poltekkes Kemenkes Banten" class="dwp-brand-logo">
+            <img src="{{ asset('src/img/logo-dwp.jpeg') }}" alt="Logo Dharma Wanita Persatuan Poltekkes Kemenkes Banten" class="dwp-brand-logo site-logo">
             <span class="dwp-brand-copy">
                 <span class="dwp-brand-title">Dharma Wanita Persatuan</span>
                 <span class="dwp-brand-subtitle">Poltekkes Kemenkes Banten</span>

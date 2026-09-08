@@ -104,7 +104,7 @@
     <div class="shell">
         <div class="top">
             <div class="brand">
-                <img src="{{ asset('src/img/logo.png') }}" alt="Logo Poltekkes">
+                <img src="{{ asset('src/img/logo-dwp.jpeg') }}" alt="Logo Dharma Wanita Persatuan Poltekkes Kemenkes Banten">
                 <div>
                     <h1>Antrean Layanan Akademik</h1>
                     <p>Poltekkes Kemenkes Banten</p>

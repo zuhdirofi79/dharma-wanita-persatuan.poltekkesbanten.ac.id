@@ -38,7 +38,7 @@
 <body>
     <div class="kiosk-shell">
         <div class="kiosk-card">
-            <img src="{{ asset('src/img/logo.png') }}" alt="Logo Poltekkes Kemenkes Banten">
+            <img src="{{ asset('src/img/logo-dwp.jpeg') }}" alt="Logo Dharma Wanita Persatuan Poltekkes Kemenkes Banten">
             <h1>Antrean Layanan Akademik</h1>
             <p>{{ $todayLabel }}</p>
 

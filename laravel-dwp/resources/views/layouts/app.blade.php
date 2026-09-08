@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Dharma Wanita Persatuan Poltekkes Kemenkes Banten')</title>
+    <link rel="icon" href="{{ asset('src/img/logo-dwp.jpeg') }}" type="image/jpeg">
+    <link rel="apple-touch-icon" href="{{ asset('src/img/logo-dwp.jpeg') }}">
     <link rel="stylesheet" href="{{ env('CSS_URL', asset('css/akademik.css')) }}">
-    <link rel="stylesheet" href="{{ asset('css/navbar-fix.css') }}?v=20260908-dwp3">
-    <link rel="stylesheet" href="{{ asset('css/dwp.css') }}?v=20260908-dwp3">
+    <link rel="stylesheet" href="{{ asset('css/navbar-fix.css') }}?v=20260908-dwp4">
+    <link rel="stylesheet" href="{{ asset('css/dwp.css') }}?v=20260908-dwp4">
     @stack('styles')
 </head>
 <body class="dwp-body">

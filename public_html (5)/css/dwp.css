@@ -36,27 +36,30 @@
 
 .dwp-brand {
     display: flex !important;
-    align-items: center;
-    gap: 12px;
+    align-items: center !important;
+    gap: 12px !important;
     width: auto !important;
     min-width: 0 !important;
     max-width: none !important;
     overflow: visible !important;
     text-decoration: none;
     color: #fff;
-    flex: 0 1 auto;
+    flex: 0 1 auto !important;
 }
 
 .dwp-brand-logo,
-.dwp-header img.dwp-brand-logo {
-    width: 54px;
-    height: 54px;
-    max-width: 54px;
-    max-height: 54px;
-    object-fit: contain;
+.dwp-header .site-logo,
+.dwp-header img.dwp-brand-logo,
+.dwp-header img.site-logo {
+    width: auto !important;
+    height: 56px !important;
+    max-width: 70px !important;
+    max-height: 60px !important;
+    object-fit: contain !important;
     display: block;
+    flex-shrink: 0 !important;
     background: #fff;
-    border-radius: 50%;
+    border-radius: 10px;
     padding: 3px;
 }
 
@@ -459,12 +462,14 @@
 }
 
 .dwp-footer-logo {
-    width: 64px;
-    height: 64px;
+    width: auto;
+    height: 56px;
+    max-width: 70px;
     object-fit: contain;
     background: #fff;
-    border-radius: 50%;
+    border-radius: 10px;
     padding: 4px;
+    flex-shrink: 0;
 }
 
 .dwp-footer-title,
@@ -566,8 +571,22 @@
         font-size: 26px;
     }
 
+    .dwp-brand-logo,
+    .dwp-header .site-logo,
+    .dwp-header img.dwp-brand-logo,
+    .dwp-footer-logo {
+        height: 46px !important;
+        max-width: 58px !important;
+        max-height: 50px !important;
+    }
+
     .dwp-brand-title {
         font-size: 15px;
+        white-space: normal;
+    }
+
+    .dwp-brand-subtitle {
+        font-size: 12px;
     }
 
     .dwp-detail-grid,
