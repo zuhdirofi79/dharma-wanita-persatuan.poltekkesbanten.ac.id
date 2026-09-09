@@ -48,6 +48,12 @@ return [
             'label' => 'SUPERADMIN_5_EMAIL',
         ],
         [
+            'email' => env('SUPERADMIN_6_EMAIL', 'lailatul.fadilah@poltekkesbanten.ac.id'),
+            'password' => env('SUPERADMIN_6_PASSWORD'),
+            'role' => 'superadmin',
+            'label' => 'SUPERADMIN_6_EMAIL',
+        ],
+        [
             'email' => env('DEFAULT_ADMIN_EMAIL'),
             'password' => env('DEFAULT_ADMIN_PASSWORD'),
             'role' => 'admin',

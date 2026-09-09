@@ -58,8 +58,8 @@ FORCE_RESET_ADMIN_PASSWORD=false
 |----------|------------|
 | `SUPERADMIN_EMAIL` | Superadmin utama |
 | `SUPERADMIN_PASSWORD` | Password sementara superadmin utama |
-| `SUPERADMIN_1_EMAIL` | Superadmin tambahan |
-| `SUPERADMIN_1_PASSWORD` | Password sementara superadmin tambahan |
+| `SUPERADMIN_1_EMAIL` … `SUPERADMIN_6_EMAIL` | Superadmin tambahan (role `superadmin`, hak katalog/order sama) |
+| `SUPERADMIN_1_PASSWORD` … `SUPERADMIN_6_PASSWORD` | Password awal; hanya di `.env`, di-hash saat sync ke `users` |
 | `DEFAULT_ADMIN_EMAIL` | Admin biasa (jika email sama dengan superadmin, role superadmin yang menang) |
 | `DEFAULT_ADMIN_PASSWORD` | Password sementara admin |
 | `FORCE_RESET_ADMIN_PASSWORD` | `true` = reset password dari env saat seeder dijalankan |
