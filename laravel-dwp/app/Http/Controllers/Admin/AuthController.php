@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\LoginRequest;
+use App\Models\User;
 use App\Services\AdminActivityLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -23,32 +25,32 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $credentials = $request->only('email', 'password');
+        $email = strtolower(trim((string) $request->input('email')));
+        $password = (string) $request->input('password');
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        $user = User::query()
+            ->whereRaw('LOWER(email) = ?', [$email])
+            ->first();
+
+        if (! $user || ! Hash::check($password, (string) $user->password)) {
             return back()
                 ->withInput($request->only('email'))
                 ->with('error', 'Email atau password salah.');
         }
 
-        $user = Auth::user();
-
         if (! $user->isStaff()) {
-            Auth::logout();
-
             return back()
                 ->withInput($request->only('email'))
                 ->with('error', 'Akun tidak memiliki akses admin.');
         }
 
         if (! $user->is_active) {
-            Auth::logout();
-
             return back()
                 ->withInput($request->only('email'))
                 ->with('error', 'Akun admin dinonaktifkan. Hubungi superadmin.');
         }
 
+        Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
 
         $this->activityLogger->log('login', 'Login admin berhasil.', $user);

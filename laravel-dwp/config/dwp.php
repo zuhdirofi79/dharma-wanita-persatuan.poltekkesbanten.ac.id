@@ -8,6 +8,40 @@ return [
 
     'primary_superadmin_email' => strtolower(trim((string) env('SUPERADMIN_EMAIL', 'qowiyrofi@poltekkesbanten.ac.id'))),
     'superadmin_1_email' => strtolower(trim((string) env('SUPERADMIN_1_EMAIL', 'kuntum.ekawati@poltekkesbanten.ac.id'))),
+    'force_reset_admin_password' => filter_var(env('FORCE_RESET_ADMIN_PASSWORD', false), FILTER_VALIDATE_BOOLEAN),
+
+    'admin_accounts' => [
+        [
+            'email' => env('SUPERADMIN_EMAIL', 'qowiyrofi@poltekkesbanten.ac.id'),
+            'password' => env('SUPERADMIN_PASSWORD'),
+            'role' => 'superadmin',
+            'label' => 'SUPERADMIN_EMAIL',
+        ],
+        [
+            'email' => env('SUPERADMIN_1_EMAIL', 'kuntum.ekawati@poltekkesbanten.ac.id'),
+            'password' => env('SUPERADMIN_1_PASSWORD'),
+            'role' => 'superadmin',
+            'label' => 'SUPERADMIN_1_EMAIL',
+        ],
+        [
+            'email' => env('SUPERADMIN_2_EMAIL'),
+            'password' => env('SUPERADMIN_2_PASSWORD'),
+            'role' => 'superadmin',
+            'label' => 'SUPERADMIN_2_EMAIL',
+        ],
+        [
+            'email' => env('SUPERADMIN_3_EMAIL'),
+            'password' => env('SUPERADMIN_3_PASSWORD'),
+            'role' => 'superadmin',
+            'label' => 'SUPERADMIN_3_EMAIL',
+        ],
+        [
+            'email' => env('DEFAULT_ADMIN_EMAIL'),
+            'password' => env('DEFAULT_ADMIN_PASSWORD'),
+            'role' => 'admin',
+            'label' => 'DEFAULT_ADMIN_EMAIL',
+        ],
+    ],
 
     'address' => 'Poltekkes Kemenkes Banten, Jl. Syech Nawawi Al Bantani No.12, Cipocok Jaya, Kota Serang',
     'email' => 'humas@poltekkesbanten.ac.id',
