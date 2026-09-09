@@ -24,16 +24,28 @@ return [
             'label' => 'SUPERADMIN_1_EMAIL',
         ],
         [
-            'email' => env('SUPERADMIN_2_EMAIL'),
+            'email' => env('SUPERADMIN_2_EMAIL', 'putri.dewi@poltekkesbanten.ac.id'),
             'password' => env('SUPERADMIN_2_PASSWORD'),
             'role' => 'superadmin',
             'label' => 'SUPERADMIN_2_EMAIL',
         ],
         [
-            'email' => env('SUPERADMIN_3_EMAIL'),
+            'email' => env('SUPERADMIN_3_EMAIL', 'dias.arliadini@poltekkesbanten.ac.id'),
             'password' => env('SUPERADMIN_3_PASSWORD'),
             'role' => 'superadmin',
             'label' => 'SUPERADMIN_3_EMAIL',
+        ],
+        [
+            'email' => env('SUPERADMIN_4_EMAIL', 'hadits.lissentiya@poltekkesbanten.ac.id'),
+            'password' => env('SUPERADMIN_4_PASSWORD'),
+            'role' => 'superadmin',
+            'label' => 'SUPERADMIN_4_EMAIL',
+        ],
+        [
+            'email' => env('SUPERADMIN_5_EMAIL', 'ida.lindawati@poltekkesbanten.ac.id'),
+            'password' => env('SUPERADMIN_5_PASSWORD'),
+            'role' => 'superadmin',
+            'label' => 'SUPERADMIN_5_EMAIL',
         ],
         [
             'email' => env('DEFAULT_ADMIN_EMAIL'),
