@@ -18,7 +18,6 @@ class WisudaController extends Controller
         return view('wisuda.index', [
             'config' => config('wisuda'),
             'studyPrograms' => StudyProgram::active()->orderBy('name')->get(),
-            'captcha' => $this->generateCaptcha(),
             'togaProduct' => DwpCatalogProduct::canonicalToga(),
         ]);
     }
@@ -29,7 +28,6 @@ class WisudaController extends Controller
 
         return view('wisuda.order', [
             'studyPrograms' => StudyProgram::active()->orderBy('name')->get(),
-            'captcha' => $this->generateCaptcha(),
             'config' => config('wisuda'),
             'prodiHint' => $prodiHint,
             'togaProduct' => DwpCatalogProduct::canonicalToga(),
@@ -45,7 +43,7 @@ class WisudaController extends Controller
             'order_code' => GraduationTogaOrder::generateOrderCode(),
             'student_name' => $data['student_name'],
             'nim' => $data['nim'],
-            'nik' => $data['nik'] ?? null,
+            'nik' => null,
             'study_program_id' => $program->id,
             'study_program_name' => $program->name,
             'graduation_year' => (int) $data['graduation_year'],
@@ -149,16 +147,5 @@ class WisudaController extends Controller
         }
 
         return $order;
-    }
-
-    private function generateCaptcha(): array
-    {
-        $a = random_int(1, 9);
-        $b = random_int(1, 9);
-
-        return [
-            'question' => "{$a} + {$b} = ?",
-            'expected' => $a + $b,
-        ];
     }
 }

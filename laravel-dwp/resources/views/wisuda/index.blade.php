@@ -3,12 +3,12 @@
 @section('title', 'Wisuda - Pemesanan Toga Wisuda Poltekkes Kemenkes Banten')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/wisuda.css') }}?v=20260904-pdp1">
+<link rel="stylesheet" href="{{ asset('css/wisuda.css') }}?v=20260909-ux2">
 @endpush
 
 @section('content')
 {{-- CSS khusus wisuda: selalu lewat asset() lokal, tidak bergantung CSS_URL --}}
-<link rel="stylesheet" href="{{ asset('css/wisuda.css') }}?v=20260904-pdp1">
+<link rel="stylesheet" href="{{ asset('css/wisuda.css') }}?v=20260909-ux2">
 <style>
 /* Critical fallback jika file CSS belum ter-cache: paksa layout 2 kolom */
 .wisuda-page{background:#f5f5f5;padding:24px 0 48px;width:100%}
@@ -165,7 +165,7 @@
                     </div>
 
                     <div class="wisuda-cta-row">
-                        <a href="#wisuda-checkout" class="wisuda-btn-primary" id="wisudaOrderCta">Pesan Baju Toga Sekarang</a>
+                        <a href="#checkout-pemesanan-toga" class="wisuda-btn-primary" id="wisudaOrderCta">Pesan Toga Sekarang</a>
                         <a href="#tab-kontak" class="wisuda-btn-outline" id="wisudaContactCta">Hubungi Sekretariat DWP</a>
                     </div>
 
@@ -237,9 +237,19 @@
             </section>
 
             {{-- Checkout form --}}
-            <section class="wisuda-checkout-card" id="wisuda-checkout">
+            <section class="wisuda-checkout-card" id="checkout-pemesanan-toga">
                 <h2>Checkout Pemesanan Toga</h2>
-                <p style="margin:0;color:#6b7280;">Lengkapi data pemesanan. Setelah submit, Anda mendapat kode pesanan dan dapat mengunggah bukti pembayaran ke rekening BRI BritAma Bisnis DWP POLTEKES BANTEN.</p>
+                <p class="wisuda-checkout-lead">Silakan lengkapi data pemesan toga dengan benar. Setelah pengajuan berhasil, Anda akan mendapatkan kode pesanan dan dapat melakukan upload bukti pembayaran untuk diverifikasi oleh Tim Sekretariat DWP Poltekkes Kemenkes Banten.</p>
+
+                <div class="wisuda-order-flow" aria-label="Alur Pemesanan Toga">
+                    <p class="wisuda-order-flow-title">Alur Pemesanan Toga</p>
+                    <ol class="wisuda-order-flow-steps">
+                        <li>Isi Data Pemesan</li>
+                        <li>Lakukan Pembayaran</li>
+                        <li>Upload Bukti Pembayaran</li>
+                        <li>Konfirmasi Tim Sekretariat DWP</li>
+                    </ol>
+                </div>
 
                 <div class="wisuda-checkout-summary" id="wisudaCheckoutSummary"
                      data-unit-price="{{ $togaProduct->unitPrice() }}">
@@ -266,75 +276,70 @@
                     <input type="hidden" name="quantity" id="formQuantity" value="{{ old('quantity', 1) }}">
 
                     <div class="wisuda-checkout-grid">
-                        <div class="form-group">
-                            <label for="student_name">Nama Lengkap <span style="color:#dc2626;">*</span></label>
-                            <input type="text" name="student_name" id="student_name" class="form-control" value="{{ old('student_name') }}" required>
+                        <div class="wisuda-checkout-col">
+                            <div class="form-group">
+                                <label for="student_name">Nama Lengkap <span style="color:#dc2626;">*</span></label>
+                                <input type="text" name="student_name" id="student_name" class="form-control" value="{{ old('student_name') }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="nim">NIM <span style="color:#dc2626;">*</span></label>
+                                <input type="text" name="nim" id="nim" class="form-control" value="{{ old('nim') }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="study_program_id">Program Studi <span style="color:#dc2626;">*</span></label>
+                                <select name="study_program_id" id="study_program_id" class="form-control" required>
+                                    <option value="">-- Pilih Program Studi --</option>
+                                    @foreach($studyPrograms as $program)
+                                        <option value="{{ $program->id }}"
+                                            data-name="{{ strtolower($program->name) }}"
+                                            @selected(old('study_program_id') == $program->id)
+                                        >{{ $program->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="graduation_year">Tahun Lulus <span style="color:#dc2626;">*</span></label>
+                                <input
+                                    type="number"
+                                    name="graduation_year"
+                                    id="graduation_year"
+                                    class="form-control"
+                                    value="{{ old('graduation_year') }}"
+                                    placeholder="Contoh: 2026"
+                                    min="2000"
+                                    max="2099"
+                                    required
+                                >
+                                @error('graduation_year')
+                                    <div style="color:#dc2626;font-size:0.875rem;margin-top:0.25rem;">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Nomor HP/Telepon <span style="color:#dc2626;">*</span></label>
+                                <input type="text" name="phone" id="phone" class="form-control" value="{{ old('phone') }}" placeholder="08xxxxxxxxxx" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Jenis Kelamin <span style="color:#dc2626;">*</span></label>
+                                <select name="gender" id="gender" class="form-control" required>
+                                    <option value="">-- Pilih --</option>
+                                    <option value="Laki-laki" @selected(old('gender') === 'Laki-laki')>Laki-laki</option>
+                                    <option value="Perempuan" @selected(old('gender') === 'Perempuan')>Perempuan</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="nim">NIM <span style="color:#dc2626;">*</span></label>
-                            <input type="text" name="nim" id="nim" class="form-control" value="{{ old('nim') }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="nik">NIK <small>(opsional)</small></label>
-                            <input type="text" name="nik" id="nik" class="form-control" value="{{ old('nik') }}">
-                        </div>
-                        <div class="form-group">
-                            <label for="study_program_id">Program Studi <span style="color:#dc2626;">*</span></label>
-                            <select name="study_program_id" id="study_program_id" class="form-control" required>
-                                <option value="">-- Pilih Program Studi --</option>
-                                @foreach($studyPrograms as $program)
-                                    <option value="{{ $program->id }}"
-                                        data-name="{{ strtolower($program->name) }}"
-                                        @selected(old('study_program_id') == $program->id)
-                                    >{{ $program->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="graduation_year">Tahun Lulus <span style="color:#dc2626;">*</span></label>
-                            <input
-                                type="number"
-                                name="graduation_year"
-                                id="graduation_year"
-                                class="form-control"
-                                value="{{ old('graduation_year') }}"
-                                placeholder="Contoh: 2026"
-                                min="2000"
-                                max="2099"
-                                required
-                            >
-                            @error('graduation_year')
-                                <div style="color:#dc2626;font-size:0.875rem;margin-top:0.25rem;">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email <span style="color:#dc2626;">*</span></label>
-                            <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Nomor HP/Telepon <span style="color:#dc2626;">*</span></label>
-                            <input type="text" name="phone" id="phone" class="form-control" value="{{ old('phone') }}" placeholder="08xxxxxxxxxx" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="gender">Jenis Kelamin <span style="color:#dc2626;">*</span></label>
-                            <select name="gender" id="gender" class="form-control" required>
-                                <option value="">-- Pilih --</option>
-                                <option value="Laki-laki" @selected(old('gender') === 'Laki-laki')>Laki-laki</option>
-                                <option value="Perempuan" @selected(old('gender') === 'Perempuan')>Perempuan</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="toga_size_display">Ukuran Toga</label>
-                            <input type="text" id="toga_size_display" class="form-control" value="All Size" readonly>
-                        </div>
-                        <div class="form-group full">
-                            <label for="size_note">Catatan Tambahan</label>
-                            <textarea name="size_note" id="size_note" class="form-control" rows="3" placeholder="Opsional: catatan tambahan untuk Tim Sekretariat DWP Poltekkes Kemenkes Banten.">{{ old('size_note') }}</textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="captcha_answer">Captcha: {{ $captcha['question'] }} <span style="color:#dc2626;">*</span></label>
-                            <input type="number" name="captcha_answer" id="captcha_answer" class="form-control" required>
-                            <input type="hidden" name="captcha_expected" value="{{ $captcha['expected'] }}">
+                        <div class="wisuda-checkout-col">
+                            <div class="form-group">
+                                <label for="email">Email <span style="color:#dc2626;">*</span></label>
+                                <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="toga_size_display">Ukuran Toga</label>
+                                <input type="text" id="toga_size_display" class="form-control" value="All Size" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="size_note">Catatan Tambahan</label>
+                                <textarea name="size_note" id="size_note" class="form-control" rows="6" placeholder="Opsional: catatan tambahan untuk Tim Sekretariat DWP Poltekkes Kemenkes Banten.">{{ old('size_note') }}</textarea>
+                            </div>
                         </div>
                         <div class="form-group full">
                             <label style="display:flex;align-items:flex-start;gap:0.5rem;font-weight:500;">
@@ -366,6 +371,11 @@
         </div>
     </div>
 </div>
+
+<a href="#checkout-pemesanan-toga" class="wisuda-float-order" id="wisudaFloatOrder">
+    <span aria-hidden="true">↓</span>
+    Pesan Toga Sekarang
+</a>
 
 <script>
 (function () {
@@ -497,17 +507,35 @@
         orderCta.addEventListener('click', function (e) {
             e.preventDefault();
             updateSummary();
-            var checkout = document.getElementById('wisuda-checkout');
+            var checkout = document.getElementById('checkout-pemesanan-toga');
             if (checkout) checkout.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
     }
 
     @if($errors->any())
-    var checkoutOnError = document.getElementById('wisuda-checkout');
+    var checkoutOnError = document.getElementById('checkout-pemesanan-toga');
     if (checkoutOnError) checkoutOnError.scrollIntoView({ behavior: 'smooth', block: 'start' });
     @endif
 
     updateSummary();
+
+    var floatOrder = document.getElementById('wisudaFloatOrder');
+    var checkoutSection = document.getElementById('checkout-pemesanan-toga');
+    if (floatOrder && checkoutSection && 'IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                floatOrder.classList.toggle('is-hidden', entry.isIntersecting);
+            });
+        }, { threshold: 0.18 });
+        observer.observe(checkoutSection);
+    }
+    if (floatOrder) {
+        floatOrder.addEventListener('click', function (e) {
+            e.preventDefault();
+            updateSummary();
+            if (checkoutSection) checkoutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
 })();
 </script>
 @endsection

@@ -2,6 +2,10 @@
 
 @section('title', 'Pesan Toga Wisuda - Poltekkes Kemenkes Banten')
 
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/wisuda.css') }}?v=20260909-ux2">
+@endpush
+
 @section('content')
 @php
     $togaProduct = $togaProduct ?? \App\Models\DwpCatalogProduct::canonicalToga();
@@ -17,8 +21,17 @@
                 <p>Pelaksanaan: <strong>{{ $config['event_date'] }}</strong></p>
                 <p>Lokasi: <strong>{{ $config['event_location'] }}</strong></p>
                 <p>{{ $config['order_deadline_note'] }}</p>
-                <p>Isi data dengan benar. Setelah submit, Anda mendapat kode pesanan. Lakukan pembayaran ke rekening BRI BritAma Bisnis DWP POLTEKES BANTEN, lalu unggah bukti pembayaran.</p>
+                <p>Silakan lengkapi data pemesan toga dengan benar. Setelah pengajuan berhasil, Anda akan mendapatkan kode pesanan dan dapat melakukan upload bukti pembayaran untuk diverifikasi oleh Tim Sekretariat DWP Poltekkes Kemenkes Banten.</p>
                 <p><strong>Harga paket:</strong> {{ $togaProduct->displayPrice() }}</p>
+                <div class="wisuda-order-flow" aria-label="Alur Pemesanan Toga">
+                    <p class="wisuda-order-flow-title">Alur Pemesanan Toga</p>
+                    <ol class="wisuda-order-flow-steps">
+                        <li>Isi Data Pemesan</li>
+                        <li>Lakukan Pembayaran</li>
+                        <li>Upload Bukti Pembayaran</li>
+                        <li>Konfirmasi Tim Sekretariat DWP</li>
+                    </ol>
+                </div>
                 @include('partials.dwp-payment-card')
                 <div class="wisuda-contact-box" style="margin-top:1rem;">
                     <strong>Kontak Sekretariat DWP:</strong>
@@ -52,10 +65,6 @@
                     <div class="form-group">
                         <label for="nim">NIM <span style="color:#dc2626;">*</span></label>
                         <input type="text" name="nim" id="nim" class="form-control" value="{{ old('nim') }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="nik">NIK <small>(opsional)</small></label>
-                        <input type="text" name="nik" id="nik" class="form-control" value="{{ old('nik') }}">
                     </div>
                     <div class="form-group">
                         <label for="study_program_id">Program Studi <span style="color:#dc2626;">*</span></label>
@@ -92,10 +101,6 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="email">Email <span style="color:#dc2626;">*</span></label>
-                        <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}" required>
-                    </div>
-                    <div class="form-group">
                         <label for="phone">Nomor HP / WhatsApp <span style="color:#dc2626;">*</span></label>
                         <input type="text" name="phone" id="phone" class="form-control" value="{{ old('phone') }}" placeholder="08xxxxxxxxxx" required>
                     </div>
@@ -106,6 +111,10 @@
                             <option value="Laki-laki" @selected(old('gender') === 'Laki-laki')>Laki-laki</option>
                             <option value="Perempuan" @selected(old('gender') === 'Perempuan')>Perempuan</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email <span style="color:#dc2626;">*</span></label>
+                        <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}" required>
                     </div>
                     <div class="form-group">
                         <label for="toga_size_display">Ukuran Toga</label>
@@ -119,11 +128,6 @@
                     <div class="form-group">
                         <label for="quantity">Jumlah <span style="color:#dc2626;">*</span></label>
                         <input type="number" name="quantity" id="quantity" class="form-control" value="{{ old('quantity', 1) }}" min="1" max="20" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="captcha_answer">Captcha: {{ $captcha['question'] }} <span style="color:#dc2626;">*</span></label>
-                        <input type="number" name="captcha_answer" id="captcha_answer" class="form-control" required>
-                        <input type="hidden" name="captcha_expected" value="{{ $captcha['expected'] }}">
                     </div>
                     @include('partials.dwp-payment-card')
                     <p class="dwp-pay-hint">Pastikan nama pemesan sesuai dengan data yang diisi agar verifikasi lebih mudah.</p>

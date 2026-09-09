@@ -363,6 +363,107 @@
     color: #111827;
 }
 
+#checkout-pemesanan-toga {
+    scroll-margin-top: 88px;
+}
+
+.wisuda-checkout-lead {
+    margin: 0 0 16px;
+    color: #334155;
+    line-height: 1.55;
+}
+
+.wisuda-order-flow {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px 16px 16px;
+    margin: 0 0 16px;
+}
+
+.wisuda-order-flow-title {
+    margin: 0 0 10px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.wisuda-order-flow-steps {
+    counter-reset: wisuda-flow;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 8px 10px;
+}
+
+.wisuda-order-flow-steps li {
+    position: relative;
+    flex: 1 1 140px;
+    min-width: 140px;
+    background: #fff;
+    border: 1px solid #d1fae5;
+    border-radius: 8px;
+    padding: 10px 12px 10px 38px;
+    color: #134e4a;
+    font-weight: 600;
+    font-size: 0.92rem;
+    line-height: 1.35;
+}
+
+.wisuda-order-flow-steps li::before {
+    counter-increment: wisuda-flow;
+    content: counter(wisuda-flow);
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #006B5B;
+    color: #fff;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wisuda-checkout-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.wisuda-float-order {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 5.5rem;
+    z-index: 89;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border-radius: 999px;
+    background: #006B5B;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.22);
+    max-width: calc(100vw - 2.5rem);
+}
+
+.wisuda-float-order:hover,
+.wisuda-float-order:focus {
+    background: #085f52;
+    color: #fff;
+}
+
+.wisuda-float-order.is-hidden {
+    display: none;
+}
+
 .wisuda-checkout-summary {
     background: #f0fdfa;
     border: 1px solid #99f6e4;
@@ -407,6 +508,13 @@
 
     .wisuda-checkout-grid {
         grid-template-columns: 1fr;
+    }
+
+    .wisuda-float-order {
+        right: 0.85rem;
+        bottom: 5.25rem;
+        font-size: 0.88rem;
+        padding: 11px 14px;
     }
 }
 

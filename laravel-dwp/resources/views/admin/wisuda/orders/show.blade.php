@@ -17,7 +17,9 @@
         <p><strong>Tanggal Pesan:</strong> {{ $order->created_at->format('d/m/Y H:i') }}</p>
         <p><strong>Nama:</strong> {{ $order->student_name }}</p>
         <p><strong>NIM:</strong> {{ $order->nim }}</p>
-        <p><strong>NIK:</strong> {{ $order->nik ?: '-' }}</p>
+        @if(filled($order->nik))
+            <p><strong>NIK:</strong> {{ $order->nik }}</p>
+        @endif
         <p><strong>Program Studi:</strong> {{ $order->programDisplayName() }}</p>
         <p><strong>Tahun Lulus:</strong> {{ $order->graduation_year ?: '-' }}</p>
         <p><strong>Email:</strong> {{ $order->email }}</p>
