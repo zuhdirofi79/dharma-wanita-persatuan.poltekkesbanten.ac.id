@@ -21,7 +21,12 @@ return [
     'event_date' => '30 September 2026',
     'event_location' => 'Auditorium UIN SMH Banten',
     'order_deadline_note' => 'Pelayanan dibuka hingga minimal 10 hari sebelum wisuda dilaksanakan.',
-    'service_hours' => '08.00 sampai 17.00 WIB',
+    'service_hours' => 'Senin–Jumat, pukul 09.00–16.00 WIB',
+    'contact_hours_label' => 'Jam Layanan Narahubung',
+    'contact_hours_days' => 'Senin–Jumat',
+    'contact_hours_time' => '09.00–16.00 WIB',
+    'contact_hours_note' => 'Mohon tidak menghubungi di luar jam layanan.',
+    'contact_hours_full' => 'Jam layanan narahubung: Senin–Jumat, pukul 09.00–16.00 WIB. Mohon tidak menghubungi di luar jam layanan.',
 
     /*
     |--------------------------------------------------------------------------

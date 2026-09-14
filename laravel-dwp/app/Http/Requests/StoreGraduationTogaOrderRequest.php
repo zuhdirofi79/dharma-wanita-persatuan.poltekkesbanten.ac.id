@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\GraduationTogaOrderNimLock;
+use App\Services\GraduationTogaOrderService;
+use App\Support\NimNormalizer;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -16,6 +19,9 @@ class StoreGraduationTogaOrderRequest extends FormRequest
     {
         $this->merge([
             'toga_size' => 'All Size',
+            'student_name' => trim((string) $this->input('student_name')),
+            'nim' => trim((string) $this->input('nim')),
+            'transfer_sender_name' => trim((string) $this->input('transfer_sender_name')),
         ]);
     }
 
@@ -24,6 +30,7 @@ class StoreGraduationTogaOrderRequest extends FormRequest
         return [
             'student_name' => ['required', 'string', 'max:255'],
             'nim' => ['required', 'string', 'max:50'],
+            'transfer_sender_name' => ['required', 'string', 'max:150'],
             'study_program_id' => ['required', 'exists:study_programs,id'],
             'graduation_year' => ['required', 'integer', 'digits:4', 'min:2000', 'max:2099'],
             'email' => ['required', 'email', 'max:255'],
@@ -44,6 +51,32 @@ class StoreGraduationTogaOrderRequest extends FormRequest
             'graduation_year.required' => 'Tahun lulus wajib diisi.',
             'graduation_year.digits' => 'Tahun lulus harus 4 digit.',
             'phone.required' => 'Nomor HP/Telepon wajib diisi.',
+            'transfer_sender_name.required' => 'Tuliskan nama orang tua/pengirim transfer yang akan digunakan pada pembayaran.',
         ];
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            if ($validator->errors()->has('nim')) {
+                return;
+            }
+
+            $normalized = NimNormalizer::normalize($this->input('nim'));
+
+            if ($normalized === '') {
+                $validator->errors()->add('nim', GraduationTogaOrderService::EMPTY_NIM_MESSAGE);
+
+                return;
+            }
+
+            $alreadyLocked = GraduationTogaOrderNimLock::query()
+                ->where('nim_normalized', $normalized)
+                ->exists();
+
+            if ($alreadyLocked) {
+                $validator->errors()->add('nim', GraduationTogaOrderService::DUPLICATE_NIM_MESSAGE);
+            }
+        });
     }
 }

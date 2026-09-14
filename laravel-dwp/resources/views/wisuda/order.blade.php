@@ -3,7 +3,7 @@
 @section('title', 'Pesan Toga Wisuda - Poltekkes Kemenkes Banten')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/wisuda.css') }}?v=20260909-ux2">
+<link rel="stylesheet" href="{{ asset('css/wisuda.css') }}?v=20260914-nim1">
 @endpush
 
 @section('content')
@@ -37,6 +37,7 @@
                     <strong>Kontak Sekretariat DWP:</strong>
                     <p style="margin:0.35rem 0;">Dias Arliadini ({{ $config['contact_phone_primary'] }})</p>
                     <p style="margin:0.35rem 0;">Putri Ratna Dewi ({{ $config['contact_phone_secondary'] }})</p>
+                    @include('partials.wisuda-contact-hours')
                     <div class="wisuda-hero-actions">
                         <a href="{{ $config['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="btn-sm btn-green">Hubungi Dias Arliadini</a>
                         <a href="{{ $config['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer" class="btn-sm btn-blue">Hubungi Putri Ratna Dewi</a>
@@ -56,7 +57,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="{{ route('wisuda.order.store') }}">
+                <form method="POST" action="{{ route('wisuda.order.store') }}" id="wisudaStandaloneOrderForm">
                     @csrf
                     <div class="form-group">
                         <label for="student_name">Nama Lengkap <span style="color:#dc2626;">*</span></label>
@@ -64,7 +65,28 @@
                     </div>
                     <div class="form-group">
                         <label for="nim">NIM <span style="color:#dc2626;">*</span></label>
-                        <input type="text" name="nim" id="nim" class="form-control" value="{{ old('nim') }}" required>
+                        <input type="text" name="nim" id="nim" class="form-control" value="{{ old('nim') }}" maxlength="50" required>
+                        <small class="wisuda-field-help">Setiap NIM hanya dapat melakukan satu kali pemesanan toga.</small>
+                        @error('nim')
+                            <div class="wisuda-field-error">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="transfer_sender_name">Nama Orang Tua/Pengirim Transfer <span style="color:#dc2626;">*</span></label>
+                        <input
+                            type="text"
+                            name="transfer_sender_name"
+                            id="transfer_sender_name"
+                            class="form-control"
+                            value="{{ old('transfer_sender_name') }}"
+                            maxlength="150"
+                            autocapitalize="words"
+                            required
+                        >
+                        <small class="wisuda-field-help">Wajib diisi sesuai nama pemilik rekening atau nama pengirim yang akan tampil pada bukti transfer agar Tim Sekretariat dapat melakukan verifikasi pembayaran dengan lebih mudah.</small>
+                        @error('transfer_sender_name')
+                            <div class="wisuda-field-error">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="study_program_id">Program Studi <span style="color:#dc2626;">*</span></label>
@@ -139,6 +161,16 @@
                     </div>
                     <button type="submit" class="btn-primary" style="width:100%;padding:1rem;font-size:1.05rem;">Kirim Pemesanan</button>
                 </form>
+                <script>
+                (function () {
+                    var form = document.getElementById('wisudaStandaloneOrderForm');
+                    if (!form) return;
+                    form.addEventListener('submit', function () {
+                        var btn = form.querySelector('button[type="submit"]');
+                        if (btn) btn.disabled = true;
+                    });
+                })();
+                </script>
             </div>
         </div>
     </div>

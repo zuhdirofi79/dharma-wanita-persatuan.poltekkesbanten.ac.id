@@ -33,6 +33,7 @@
             <div class="wisuda-order-summary">
                 <p><strong>Nama:</strong> {{ $order->student_name }}</p>
                 <p><strong>NIM:</strong> {{ $order->nim }}</p>
+                <p><strong>Nama Orang Tua/Pengirim Transfer:</strong> {{ $order->transferSenderDisplay() }}</p>
                 <p><strong>Program Studi:</strong> {{ $order->programDisplayName() }}</p>
                 <p><strong>Tahun Lulus:</strong> {{ $order->graduation_year ?: '-' }}</p>
                 <p><strong>Email:</strong> {{ $order->email }}</p>
@@ -59,6 +60,7 @@
                 </a>
                 <a href="{{ route('wisuda.index') }}" class="btn-sm btn-gray">Kembali ke Wisuda</a>
             </div>
+            @include('partials.wisuda-contact-hours')
         </div>
     </div>
 </section>

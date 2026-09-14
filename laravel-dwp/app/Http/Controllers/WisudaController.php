@@ -7,6 +7,7 @@ use App\Http\Requests\UploadWisudaPaymentProofRequest;
 use App\Models\DwpCatalogProduct;
 use App\Models\GraduationTogaOrder;
 use App\Models\StudyProgram;
+use App\Services\GraduationTogaOrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -34,29 +35,9 @@ class WisudaController extends Controller
         ]);
     }
 
-    public function storeOrder(StoreGraduationTogaOrderRequest $request)
+    public function storeOrder(StoreGraduationTogaOrderRequest $request, GraduationTogaOrderService $orderService)
     {
-        $data = $request->validated();
-        $program = StudyProgram::findOrFail($data['study_program_id']);
-
-        $order = GraduationTogaOrder::create([
-            'order_code' => GraduationTogaOrder::generateOrderCode(),
-            'student_name' => $data['student_name'],
-            'nim' => $data['nim'],
-            'nik' => null,
-            'study_program_id' => $program->id,
-            'study_program_name' => $program->name,
-            'graduation_year' => (int) $data['graduation_year'],
-            'email' => $data['email'],
-            'phone' => $data['phone'],
-            'gender' => $data['gender'],
-            'toga_size' => 'All Size',
-            'size_note' => $data['size_note'] ?? null,
-            'quantity' => $data['quantity'],
-            'status' => 'pending_payment',
-            'payment_status' => 'unpaid',
-            'public_token' => GraduationTogaOrder::generatePublicToken(),
-        ]);
+        $order = $orderService->createOrder($request->validated());
 
         return redirect()
             ->route('wisuda.order.show', [

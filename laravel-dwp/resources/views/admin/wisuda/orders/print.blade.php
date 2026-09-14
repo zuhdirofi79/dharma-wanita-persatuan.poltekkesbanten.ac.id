@@ -8,8 +8,8 @@
     <style>
         body { background:#fff; color:#111; padding:1.5rem; }
         .toolbar { margin-bottom:1rem; display:flex; gap:0.5rem; flex-wrap:wrap; }
-        table { width:100%; border-collapse:collapse; font-size:12px; }
-        th, td { border:1px solid #cbd5e1; padding:0.4rem 0.45rem; vertical-align:top; }
+        table { width:100%; border-collapse:collapse; font-size:11px; }
+        th, td { border:1px solid #cbd5e1; padding:0.35rem 0.4rem; vertical-align:top; word-break:break-word; }
         th { background:#f1f5f9; }
         .summary { display:flex; flex-wrap:wrap; gap:1rem; margin:1rem 0; }
         @media print {
@@ -44,6 +44,7 @@
                 <th>Kode</th>
                 <th>Nama</th>
                 <th>NIM</th>
+                <th>Nama Pengirim Transfer</th>
                 <th>Prodi</th>
                 <th>Tahun Lulus</th>
                 <th>HP/Telepon</th>
@@ -64,6 +65,7 @@
                     <td>{{ $order->order_code }}</td>
                     <td>{{ $order->student_name }}</td>
                     <td>{{ $order->nim }}</td>
+                    <td>{{ $order->transferSenderDisplay() }}</td>
                     <td>{{ $order->programDisplayName() }}</td>
                     <td>{{ $order->graduation_year ?: '-' }}</td>
                     <td>{{ $order->phone }}</td>
@@ -76,7 +78,7 @@
                     <td>{{ $order->paymentVerifiedBy?->name ?: '-' }}</td>
                 </tr>
             @empty
-                <tr><td colspan="15">Tidak ada data untuk periode/filter ini.</td></tr>
+                <tr><td colspan="16">Tidak ada data untuk periode/filter ini.</td></tr>
             @endforelse
         </tbody>
     </table>

@@ -31,6 +31,8 @@
             <div class="wisuda-order-summary">
                 <p><strong>Kode Pesanan:</strong> {{ $order->order_code }}</p>
                 <p><strong>Nama Pemesan:</strong> {{ $order->student_name }}</p>
+                <p><strong>NIM:</strong> {{ $order->nim }}</p>
+                <p><strong>Nama Orang Tua/Pengirim Transfer:</strong> {{ $order->transferSenderDisplay() }}</p>
                 <p><strong>Program Studi:</strong> {{ $order->programDisplayName() }}</p>
                 <p><strong>Tahun Lulus:</strong> {{ $order->graduation_year ?: '-' }}</p>
                 <p><strong>Ukuran Toga:</strong> {{ $order->toga_size }}</p>
@@ -63,6 +65,7 @@
                     Hubungi Putri Ratna Dewi
                 </a>
             </div>
+            @include('partials.wisuda-contact-hours')
 
             @if($order->hasPaymentProof())
                 <div class="alert alert-info" style="margin-top:1rem;">

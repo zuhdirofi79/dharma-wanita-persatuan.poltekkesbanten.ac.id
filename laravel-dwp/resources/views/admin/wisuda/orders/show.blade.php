@@ -17,6 +17,7 @@
         <p><strong>Tanggal Pesan:</strong> {{ \App\Support\AppTimezone::format($order->created_at) }}</p>
         <p><strong>Nama:</strong> {{ $order->student_name }}</p>
         <p><strong>NIM:</strong> {{ $order->nim }}</p>
+        <p><strong>Nama Orang Tua/Pengirim Transfer:</strong> {{ $order->transferSenderDisplay() }}</p>
         @if(filled($order->nik))
             <p><strong>NIK:</strong> {{ $order->nik }}</p>
         @endif
@@ -50,7 +51,15 @@
 @include('partials.dwp-payment-card')
 
 <div class="admin-card">
-    <h3 style="margin-top:0;">Bukti Pembayaran</h3>
+    <h3 style="margin-top:0;">Verifikasi Pembayaran</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0.5rem 1.5rem;margin-bottom:1rem;">
+        <p style="margin:0;"><strong>Nama Mahasiswa:</strong> {{ $order->student_name }}</p>
+        <p style="margin:0;"><strong>NIM:</strong> {{ $order->nim }}</p>
+        <p style="margin:0;"><strong>Nama Orang Tua/Pengirim Transfer:</strong> {{ $order->transferSenderDisplay() }}</p>
+        <p style="margin:0;"><strong>Nominal:</strong> {{ $togaProduct->estimatedTotal((int) $order->quantity) }}</p>
+        <p style="margin:0;"><strong>Status Pembayaran:</strong> {{ $order->paymentStatusLabel() }}</p>
+    </div>
+    <h3>Bukti Pembayaran</h3>
     @if($order->hasPaymentProof())
         <p><strong>File:</strong> {{ $order->payment_proof_original_name }}</p>
         <p><strong>Ukuran:</strong> {{ number_format(($order->payment_proof_size ?? 0) / 1024, 1) }} KB</p>

@@ -19,6 +19,7 @@ class GraduationTogaOrder extends Model
         'graduation_year',
         'email',
         'phone',
+        'transfer_sender_name',
         'gender',
         'toga_size',
         'size_note',
@@ -130,6 +131,11 @@ class GraduationTogaOrder extends Model
         $mime = (string) $this->payment_proof_mime;
 
         return str_starts_with($mime, 'image/');
+    }
+
+    public function transferSenderDisplay(): string
+    {
+        return filled($this->transfer_sender_name) ? (string) $this->transfer_sender_name : '-';
     }
 
     public function programDisplayName(): string

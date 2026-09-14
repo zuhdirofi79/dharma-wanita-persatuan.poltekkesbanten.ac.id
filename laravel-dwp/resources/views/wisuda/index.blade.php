@@ -3,12 +3,12 @@
 @section('title', 'Wisuda - Pemesanan Toga Wisuda Poltekkes Kemenkes Banten')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/wisuda.css') }}?v=20260909-ux2">
+<link rel="stylesheet" href="{{ asset('css/wisuda.css') }}?v=20260914-nim1">
 @endpush
 
 @section('content')
 {{-- CSS khusus wisuda: selalu lewat asset() lokal, tidak bergantung CSS_URL --}}
-<link rel="stylesheet" href="{{ asset('css/wisuda.css') }}?v=20260909-ux2">
+<link rel="stylesheet" href="{{ asset('css/wisuda.css') }}?v=20260914-nim1">
 <style>
 /* Critical fallback jika file CSS belum ter-cache: paksa layout 2 kolom */
 .wisuda-page{background:#f5f5f5;padding:24px 0 48px;width:100%}
@@ -105,7 +105,7 @@
                     <div class="wisuda-product-badges">
                         <span class="wisuda-badge">Resmi Poltekkes Kemenkes Banten</span>
                         <span class="wisuda-badge wisuda-badge-warn">Pemesanan minimal 10 hari sebelum wisuda</span>
-                        <span class="wisuda-badge">Pelayanan 08.00–17.00 WIB</span>
+                        <span class="wisuda-badge">Jam layanan 09.00–16.00 WIB</span>
                     </div>
 
                     <h1 class="wisuda-product-title">Paket Baju Toga Wisuda Poltekkes Kemenkes Banten</h1>
@@ -172,8 +172,9 @@
                     <div class="wisuda-seller-box">
                         <div>
                             <strong>Kontak Sekretariat DWP:</strong>
-                            <span>Dias Arliadini ({{ $config['contact_phone_primary'] }}) · Putri Ratna Dewi ({{ $config['contact_phone_secondary'] }}) · Pelayanan {{ $config['service_hours'] }}</span>
+                            <span>Dias Arliadini ({{ $config['contact_phone_primary'] }}) · Putri Ratna Dewi ({{ $config['contact_phone_secondary'] }})</span>
                         </div>
+                        @include('partials.wisuda-contact-hours')
                         <div class="wisuda-option-buttons">
                             <a href="{{ $config['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="wisuda-btn-outline" style="padding:8px 12px;font-size:13px;">Hubungi Dias Arliadini</a>
                             <a href="{{ $config['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer" class="wisuda-btn-outline" style="padding:8px 12px;font-size:13px;">Hubungi Putri Ratna Dewi</a>
@@ -224,7 +225,7 @@
                         <p>Kontak Sekretariat DWP:</p>
                         <p>Dias Arliadini ({{ $config['contact_phone_primary'] }})</p>
                         <p>Putri Ratna Dewi ({{ $config['contact_phone_secondary'] }})</p>
-                        <p>Pelayanan pukul 08.00 sampai 17.00 WIB. Di luar jam tersebut, silakan menunggu hari berikutnya.</p>
+                        @include('partials.wisuda-contact-hours')
                         <p>{{ $config['order_deadline_note'] }}</p>
                         <div class="wisuda-contact-inline">
                             <div class="wisuda-cta-row" style="margin-top:10px;">
@@ -283,7 +284,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="nim">NIM <span style="color:#dc2626;">*</span></label>
-                                <input type="text" name="nim" id="nim" class="form-control" value="{{ old('nim') }}" required>
+                                <input type="text" name="nim" id="nim" class="form-control" value="{{ old('nim') }}" maxlength="50" required>
+                                <small class="wisuda-field-help">Setiap NIM hanya dapat melakukan satu kali pemesanan toga.</small>
+                                @error('nim')
+                                    <div class="wisuda-field-error">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group">
                                 <label for="study_program_id">Program Studi <span style="color:#dc2626;">*</span></label>
@@ -311,12 +316,8 @@
                                     required
                                 >
                                 @error('graduation_year')
-                                    <div style="color:#dc2626;font-size:0.875rem;margin-top:0.25rem;">{{ $message }}</div>
+                                    <div class="wisuda-field-error">{{ $message }}</div>
                                 @enderror
-                            </div>
-                            <div class="form-group">
-                                <label for="phone">Nomor HP/Telepon <span style="color:#dc2626;">*</span></label>
-                                <input type="text" name="phone" id="phone" class="form-control" value="{{ old('phone') }}" placeholder="08xxxxxxxxxx" required>
                             </div>
                             <div class="form-group">
                                 <label for="gender">Jenis Kelamin <span style="color:#dc2626;">*</span></label>
@@ -333,12 +334,33 @@
                                 <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}" required>
                             </div>
                             <div class="form-group">
+                                <label for="transfer_sender_name">Nama Orang Tua/Pengirim Transfer <span style="color:#dc2626;">*</span></label>
+                                <input
+                                    type="text"
+                                    name="transfer_sender_name"
+                                    id="transfer_sender_name"
+                                    class="form-control"
+                                    value="{{ old('transfer_sender_name') }}"
+                                    maxlength="150"
+                                    autocapitalize="words"
+                                    required
+                                >
+                                <small class="wisuda-field-help">Wajib diisi sesuai nama pemilik rekening atau nama pengirim yang akan tampil pada bukti transfer agar Tim Sekretariat dapat melakukan verifikasi pembayaran dengan lebih mudah.</small>
+                                @error('transfer_sender_name')
+                                    <div class="wisuda-field-error">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-group">
                                 <label for="toga_size_display">Ukuran Toga</label>
                                 <input type="text" id="toga_size_display" class="form-control" value="All Size" readonly>
                             </div>
                             <div class="form-group">
+                                <label for="phone">Nomor HP/Telepon <span style="color:#dc2626;">*</span></label>
+                                <input type="text" name="phone" id="phone" class="form-control" value="{{ old('phone') }}" placeholder="08xxxxxxxxxx" required>
+                            </div>
+                            <div class="form-group">
                                 <label for="size_note">Catatan Tambahan</label>
-                                <textarea name="size_note" id="size_note" class="form-control" rows="6" placeholder="Opsional: catatan tambahan untuk Tim Sekretariat DWP Poltekkes Kemenkes Banten.">{{ old('size_note') }}</textarea>
+                                <textarea name="size_note" id="size_note" class="form-control" rows="4" placeholder="Opsional: catatan tambahan untuk Tim Sekretariat DWP Poltekkes Kemenkes Banten.">{{ old('size_note') }}</textarea>
                             </div>
                         </div>
                         <div class="form-group full">
@@ -362,6 +384,7 @@
                     <strong>Kontak Sekretariat DWP:</strong>
                     <p style="margin:6px 0;">Dias Arliadini ({{ $config['contact_phone_primary'] }})</p>
                     <p style="margin:6px 0;">Putri Ratna Dewi ({{ $config['contact_phone_secondary'] }})</p>
+                    @include('partials.wisuda-contact-hours')
                     <div class="wisuda-cta-row" style="margin-top:8px;">
                         <a href="{{ $config['contact_wa_primary'] }}" target="_blank" rel="noopener noreferrer" class="wisuda-btn-outline">Hubungi Dias Arliadini</a>
                         <a href="{{ $config['contact_wa_secondary'] }}" target="_blank" rel="noopener noreferrer" class="wisuda-btn-outline">Hubungi Putri Ratna Dewi</a>
@@ -509,6 +532,14 @@
             updateSummary();
             var checkout = document.getElementById('checkout-pemesanan-toga');
             if (checkout) checkout.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    }
+
+    var checkoutForm = document.getElementById('wisudaCheckoutForm');
+    if (checkoutForm) {
+        checkoutForm.addEventListener('submit', function () {
+            var submitBtn = checkoutForm.querySelector('button[type="submit"]');
+            if (submitBtn) submitBtn.disabled = true;
         });
     }
 

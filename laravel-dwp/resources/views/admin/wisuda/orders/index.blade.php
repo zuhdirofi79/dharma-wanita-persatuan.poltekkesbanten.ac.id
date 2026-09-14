@@ -74,6 +74,7 @@
                 <th>Kode Pesanan</th>
                 <th>Nama Mahasiswa</th>
                 <th>NIM</th>
+                <th>Nama Pengirim Transfer</th>
                 <th>Program Studi</th>
                 <th>Tahun Lulus</th>
                 <th>Email</th>
@@ -96,6 +97,7 @@
                     <td>{{ $order->order_code }}</td>
                     <td>{{ $order->student_name }}</td>
                     <td>{{ $order->nim }}</td>
+                    <td>{{ $order->transferSenderDisplay() }}</td>
                     <td>{{ $order->programDisplayName() }}</td>
                     <td>{{ $order->graduation_year ?: '-' }}</td>
                     <td>{{ $order->email }}</td>
@@ -116,7 +118,7 @@
                     <td><a href="{{ route('admin.wisuda.orders.show', $order) }}" class="btn-sm btn-teal">Detail</a></td>
                 </tr>
             @empty
-                <tr><td colspan="17">Belum ada pesanan toga wisuda.</td></tr>
+                <tr><td colspan="18">Belum ada pesanan toga wisuda.</td></tr>
             @endforelse
         </tbody>
     </table>

@@ -33,6 +33,7 @@ class WisudaOrderTimezoneTest extends TestCase
                 $table->string('phone');
                 $table->string('gender');
                 $table->string('toga_size');
+                $table->string('transfer_sender_name', 150)->nullable();
                 $table->text('size_note')->nullable();
                 $table->unsignedInteger('quantity')->default(1);
                 $table->string('status')->default('pending_payment');
