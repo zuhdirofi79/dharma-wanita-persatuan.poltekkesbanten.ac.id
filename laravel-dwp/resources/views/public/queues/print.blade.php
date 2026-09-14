@@ -83,7 +83,7 @@
         <h1 class="title">Layanan Akademik<br>Poltekkes Kemenkes Banten</h1>
         <p class="subtitle">Nomor Antrean</p>
         <div class="code">{{ $queue->queue_code }}</div>
-        <p class="meta"><strong>{{ $queue->queue_date->format('d/m/Y') }}</strong> · {{ $queue->created_at->timezone('Asia/Jakarta')->format('H:i') }}</p>
+        <p class="meta"><strong>{{ format_wib($queue->queue_date, 'd/m/Y', false) }}</strong> · {{ format_wib($queue->created_at, 'H:i', false) }}</p>
         @if($queue->visitor_name)
             <p class="meta">{{ $queue->visitor_name }}</p>
         @endif

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\AppTimezone;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
@@ -71,7 +72,7 @@ class GraduationTogaOrder extends Model
     public static function generateOrderCode(): string
     {
         do {
-            $code = 'WSD-'.now()->format('Ymd').'-'.Str::upper(Str::random(4));
+            $code = 'WSD-'.AppTimezone::now()->format('Ymd').'-'.Str::upper(Str::random(4));
         } while (self::where('order_code', $code)->exists());
 
         return $code;

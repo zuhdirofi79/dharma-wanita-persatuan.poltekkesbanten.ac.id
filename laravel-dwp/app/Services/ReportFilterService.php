@@ -2,27 +2,31 @@
 
 namespace App\Services;
 
+use App\Support\AppTimezone;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class ReportFilterService
 {
-    public const TIMEZONE = 'Asia/Jakarta';
+    public static function timezone(): string
+    {
+        return AppTimezone::name();
+    }
 
     public function resolvePeriod(Request $request): array
     {
         $period = (string) $request->input('period', 'this_month');
-        $now = Carbon::now(self::TIMEZONE);
+        $now = AppTimezone::now();
         $startDate = $request->input('start_date', $request->input('date_from'));
         $endDate = $request->input('end_date', $request->input('date_to'));
 
         if ($period === 'custom' || ($startDate && $endDate && ! $request->filled('period'))) {
             $from = $startDate
-                ? Carbon::parse($startDate, self::TIMEZONE)->startOfDay()
+                ? AppTimezone::parseDateStart($startDate)
                 : $now->copy()->startOfDay();
             $to = $endDate
-                ? Carbon::parse($endDate, self::TIMEZONE)->endOfDay()
+                ? AppTimezone::parseDateEnd($endDate)
                 : $now->copy()->endOfDay();
             $period = 'custom';
         } else {
@@ -76,8 +80,8 @@ class ReportFilterService
 
     public function periodLabel(array $period): string
     {
-        $from = Carbon::parse($period['start_date'])->format('d/m/Y');
-        $to = Carbon::parse($period['end_date'])->format('d/m/Y');
+        $from = Carbon::parse($period['start_date'], AppTimezone::name())->format('d/m/Y');
+        $to = Carbon::parse($period['end_date'], AppTimezone::name())->format('d/m/Y');
 
         return match ($period['period']) {
             'today' => 'Hari ini ('.$from.')',
@@ -94,8 +98,8 @@ class ReportFilterService
         $period = $this->resolvePeriod($request);
 
         return $query
-            ->whereDate($dateColumn, '>=', $period['start_date'])
-            ->whereDate($dateColumn, '<=', $period['end_date']);
+            ->where($dateColumn, '>=', $period['from']->copy()->utc()->format('Y-m-d H:i:s'))
+            ->where($dateColumn, '<=', $period['to']->copy()->utc()->format('Y-m-d H:i:s'));
     }
 
     public function periodOptions(): array

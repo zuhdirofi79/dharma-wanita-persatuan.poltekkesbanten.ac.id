@@ -27,7 +27,7 @@
         @foreach($rows as $i => $row)
             <tr>
                 <td>{{ $i + 1 }}</td>
-                <td>{{ optional($row->created_at)?->timezone('Asia/Jakarta')->format('d/m/Y H:i') }}</td>
+                <td>{{ format_wib($row->created_at) }}</td>
                 <td>{{ $row->ticket_number }}</td>
                 <td>{{ $row->serviceType?->name }}</td>
                 <td>{{ $row->status }}</td>

@@ -144,10 +144,10 @@
                         <td>{{ $row->visitor_type }}</td>
                         <td>{{ $row->purposeDisplay() }}</td>
                         <td>{{ $row->statusLabel() }}</td>
-                        <td>{{ optional($row->created_at)?->timezone('Asia/Jakarta')->format('H:i:s') }}</td>
-                        <td>{{ optional($row->called_at)?->timezone('Asia/Jakarta')->format('H:i:s') }}</td>
-                        <td>{{ optional($row->served_at)?->timezone('Asia/Jakarta')->format('H:i:s') }}</td>
-                        <td>{{ optional($row->finished_at)?->timezone('Asia/Jakarta')->format('H:i:s') }}</td>
+                        <td>{{ format_wib($row->created_at, 'H:i:s', false) }}</td>
+                        <td>{{ format_wib($row->called_at, 'H:i:s', false) }}</td>
+                        <td>{{ format_wib($row->served_at, 'H:i:s', false) }}</td>
+                        <td>{{ format_wib($row->finished_at, 'H:i:s', false) }}</td>
                         <td>{{ $row->formatDuration($row->waitingSeconds()) }}</td>
                         <td>{{ $row->formatDuration($row->serviceSeconds()) }}</td>
                         <td>{{ $row->officerName() }}</td>

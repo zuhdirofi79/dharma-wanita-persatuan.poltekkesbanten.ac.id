@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\AcademicSatisfactionSurvey;
 use App\Models\ServiceType;
+use App\Support\AppTimezone;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -26,13 +28,12 @@ class SurveyStatsService
             $query->where('service_type_id', $request->service_type_id);
         }
 
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->date_from);
-        }
-
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->date_to);
-        }
+        AppTimezone::applyLocalDateFilter(
+            $query,
+            'created_at',
+            $request->input('date_from'),
+            $request->input('date_to'),
+        );
 
         return $query;
     }
@@ -149,8 +150,8 @@ class SurveyStatsService
     {
         $driver = DB::getDriverName();
         $monthExpr = $driver === 'sqlite'
-            ? "strftime('%Y-%m', created_at)"
-            : "DATE_FORMAT(created_at, '%Y-%m')";
+            ? "strftime('%Y-%m', datetime(created_at, '".AppTimezone::sqliteShiftModifier()."'))"
+            : "DATE_FORMAT(CONVERT_TZ(created_at, '+00:00', '".AppTimezone::utcOffset()."'), '%Y-%m')";
 
         $rows = $this->filteredQuery($request)
             ->selectRaw("{$monthExpr} as month_key, COUNT(*) as total")
@@ -248,7 +249,7 @@ class SurveyStatsService
     private function formatDateId(string $date): string
     {
         try {
-            return \Carbon\Carbon::parse($date)->format('d/m/Y');
+            return Carbon::parse($date)->format('d/m/Y');
         } catch (\Throwable) {
             return $date;
         }

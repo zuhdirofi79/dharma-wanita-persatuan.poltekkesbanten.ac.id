@@ -41,6 +41,6 @@
     <div class="meta">
         <div><strong>{{ $printTitle ?? 'Laporan Pelayanan Akademik' }}</strong></div>
         <div>Periode: {{ $period_label }}</div>
-        <div>Waktu cetak: {{ $generatedAt->format('d/m/Y H:i') }} WIB</div>
+        <div>Waktu cetak: {{ format_wib($generatedAt) }}</div>
         <div>Dicetak oleh: {{ $printedBy ?? '-' }}</div>
     </div>

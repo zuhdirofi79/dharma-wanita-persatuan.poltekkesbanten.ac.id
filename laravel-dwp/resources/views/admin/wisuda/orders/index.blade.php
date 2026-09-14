@@ -92,7 +92,7 @@
             @forelse($orders as $index => $order)
                 <tr>
                     <td>{{ $orders->firstItem() + $index }}</td>
-                    <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
+                    <td>{{ format_wib($order->created_at) }}</td>
                     <td>{{ $order->order_code }}</td>
                     <td>{{ $order->student_name }}</td>
                     <td>{{ $order->nim }}</td>
@@ -111,7 +111,7 @@
                             -
                         @endif
                     </td>
-                    <td>{{ $order->payment_uploaded_at?->format('d/m/Y H:i') ?: '-' }}</td>
+                    <td>{{ format_wib($order->payment_uploaded_at) }}</td>
                     <td>{{ $order->paymentVerifiedBy?->name ?: '-' }}</td>
                     <td><a href="{{ route('admin.wisuda.orders.show', $order) }}" class="btn-sm btn-teal">Detail</a></td>
                 </tr>

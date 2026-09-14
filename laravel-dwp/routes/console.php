@@ -10,4 +10,5 @@ Artisan::command('inspire', function () {
 
 Schedule::command('academic:send-completed-files')
     ->everyFiveMinutes()
+    ->timezone(config('app.display_timezone'))
     ->withoutOverlapping();

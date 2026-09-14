@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\SurveyStatsService;
+use App\Support\AppTimezone;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -37,7 +38,7 @@ class SurveyDashboardController extends Controller
             'feedbackRows' => $this->stats->recentFeedback($request, 200),
             'periodLabel' => $payload['period_label'],
             'filters' => $request->only(['date_from', 'date_to', 'service_type_id', 'satisfaction_level']),
-            'generatedAt' => now(),
+            'generatedAt' => AppTimezone::now(),
         ]);
     }
 
@@ -47,7 +48,7 @@ class SurveyDashboardController extends Controller
             ->with('serviceType')
             ->latest();
 
-        $filename = 'survei-kepuasan-layanan-akademik-'.now()->format('Ymd').'.csv';
+        $filename = 'survei-kepuasan-layanan-akademik-'.AppTimezone::now()->format('Ymd').'.csv';
 
         return response()->streamDownload(function () use ($query) {
             $handle = fopen('php://output', 'w');
@@ -67,7 +68,7 @@ class SurveyDashboardController extends Controller
             $query->chunk(200, function ($rows) use ($handle) {
                 foreach ($rows as $row) {
                     fputcsv($handle, [
-                        $row->created_at->format('Y-m-d H:i'),
+                        format_wib($row->created_at, 'Y-m-d H:i'),
                         $row->satisfactionLabel(),
                         $row->serviceDisplayName(),
                         $row->reason ?? '-',

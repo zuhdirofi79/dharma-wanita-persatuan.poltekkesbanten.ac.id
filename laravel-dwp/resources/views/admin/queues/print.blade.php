@@ -31,7 +31,7 @@
     <h1>Laporan Antrean Layanan Akademik</h1>
     <p class="muted" style="margin:0;">Poltekkes Kemenkes Banten</p>
     <p style="margin:0.35rem 0 0;"><strong>Periode:</strong> {{ $period_label }}</p>
-    <p class="muted" style="margin:0.25rem 0 0;">Dicetak: {{ $generatedAt->format('d/m/Y H:i') }} WIB</p>
+    <p class="muted" style="margin:0.25rem 0 0;">Dicetak: {{ format_wib($generatedAt) }}</p>
 
     <div class="summary">
         <div>Total Pengunjung<strong>{{ $summary['total'] }}</strong></div>
@@ -82,9 +82,9 @@
                     <td>{{ $row->visitor_type ?? '-' }}</td>
                     <td>{{ $row->purposeDisplay() }}</td>
                     <td>{{ $row->statusLabel() }}</td>
-                    <td>{{ optional($row->created_at)?->timezone('Asia/Jakarta')->format('H:i') ?? '-' }}</td>
-                    <td>{{ optional($row->called_at)?->timezone('Asia/Jakarta')->format('H:i') ?? '-' }}</td>
-                    <td>{{ optional($row->finished_at)?->timezone('Asia/Jakarta')->format('H:i') ?? '-' }}</td>
+                    <td>{{ format_wib($row->created_at, 'H:i', false) }}</td>
+                    <td>{{ format_wib($row->called_at, 'H:i', false) }}</td>
+                    <td>{{ format_wib($row->finished_at, 'H:i', false) }}</td>
                     <td>{{ $row->formatDuration($row->waitingSeconds()) }}</td>
                     <td>{{ $row->formatDuration($row->serviceSeconds()) }}</td>
                     <td>{{ $row->officerName() }}</td>

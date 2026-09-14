@@ -5,17 +5,18 @@ namespace App\Services;
 use App\Enums\SubmissionStatus;
 use App\Models\ServiceType;
 use App\Models\Submission;
+use App\Support\AppTimezone;
 use Illuminate\Support\Collection;
 
 class ProgressStatsService
 {
     public function forService(ServiceType $serviceType): array
     {
-        $year = now()->year;
+        $year = AppTimezone::now()->year;
 
         $query = Submission::query()
             ->where('service_type_id', $serviceType->id)
-            ->whereYear('created_at', $year);
+            ->whereBetween('created_at', AppTimezone::yearUtcRange($year));
 
         $processed = (clone $query)->whereNotIn('status', [
             SubmissionStatus::Submitted->value,
@@ -33,8 +34,8 @@ class ProgressStatsService
 
     public function dashboardStats(?int $studyProgramId = null): array
     {
-        $year = now()->year;
-        $base = Submission::query()->whereYear('created_at', $year);
+        $year = AppTimezone::now()->year;
+        $base = Submission::query()->whereBetween('created_at', AppTimezone::yearUtcRange($year));
 
         if ($studyProgramId !== null) {
             $base->where('study_program_id', $studyProgramId);
@@ -71,14 +72,14 @@ class ProgressStatsService
                 ->get(),
             'year_by_service' => (clone $serviceQuery)
                 ->withCount(['submissions as year_count' => function ($q) use ($year, $studyProgramId) {
-                    $q->whereYear('created_at', $year);
+                    $q->whereBetween('created_at', AppTimezone::yearUtcRange($year));
                     $this->scopeSubmissions($q, $studyProgramId);
                 }])
                 ->get(),
             'active_services' => ServiceType::active()
                 ->withCount(['submissions' => fn ($q) => $this->scopeSubmissions($q, $studyProgramId)])
                 ->withCount(['submissions as year_count' => function ($q) use ($year, $studyProgramId) {
-                    $q->whereYear('created_at', $year);
+                    $q->whereBetween('created_at', AppTimezone::yearUtcRange($year));
                     $this->scopeSubmissions($q, $studyProgramId);
                 }])
                 ->orderBy('sort_order')
@@ -101,13 +102,13 @@ class ProgressStatsService
 
     public function progressPageStats(): Collection
     {
-        $year = now()->year;
+        $year = AppTimezone::now()->year;
 
         return ServiceType::active()
             ->orderBy('sort_order')
             ->orderBy('id')
             ->get()
-            ->map(function (ServiceType $service) use ($year) {
+            ->map(function (ServiceType $service) {
                 $stats = $this->forService($service);
 
                 return [

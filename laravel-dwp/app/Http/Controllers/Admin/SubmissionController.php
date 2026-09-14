@@ -13,6 +13,7 @@ use App\Models\Submission;
 use App\Services\AdminActivityLogger;
 use App\Services\FileStorageService;
 use App\Services\SubmissionService;
+use App\Support\AppTimezone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -246,7 +247,7 @@ class SubmissionController extends Controller
     {
         $query = $this->buildFilteredQuery($request);
 
-        $filename = 'pengajuan-'.now()->format('Ymd-His').'.csv';
+        $filename = 'pengajuan-'.AppTimezone::now()->format('Ymd-His').'.csv';
 
         $this->activityLogger->log('export_submissions', 'Export data pengajuan ke CSV');
 
@@ -269,7 +270,7 @@ class SubmissionController extends Controller
                         $row->email,
                         $row->whatsapp,
                         $row->status,
-                        $row->created_at->format('Y-m-d H:i'),
+                        format_wib($row->created_at, 'Y-m-d H:i'),
                     ]);
                 }
             });
@@ -311,12 +312,13 @@ class SubmissionController extends Controller
             $query->where('study_program_id', $request->study_program_id);
         }
 
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->date_from);
-        }
-
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->date_to);
+        if ($request->filled('date_from') || $request->filled('date_to')) {
+            AppTimezone::applyLocalDateFilter(
+                $query,
+                'created_at',
+                $request->input('date_from'),
+                $request->input('date_to'),
+            );
         }
 
         if ($request->filled('search')) {

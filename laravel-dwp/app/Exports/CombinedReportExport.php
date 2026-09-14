@@ -4,12 +4,13 @@ namespace App\Exports;
 
 use App\Services\AcademicAuditReportService;
 use App\Services\ReportFilterService;
+use App\Support\AppTimezone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
 class CombinedReportExport implements WithMultipleSheets
@@ -25,7 +26,7 @@ class CombinedReportExport implements WithMultipleSheets
         $payload = $this->reports->combinedReportPayload($this->request);
         $period = $this->filterService->resolvePeriod($this->request);
         $admin = $this->request->user()?->name ?? '-';
-        $generatedAt = now(ReportFilterService::TIMEZONE)->format('d/m/Y H:i').' WIB';
+        $generatedAt = format_wib(AppTimezone::now());
 
         $summaryRows = collect([
             ['Laporan Gabungan Pelayanan Akademik'],
@@ -63,7 +64,7 @@ class CombinedReportExport implements WithMultipleSheets
         });
 
         return [
-            new class($summaryRows) implements FromCollection, WithTitle, ShouldAutoSize
+            new class($summaryRows) implements FromCollection, ShouldAutoSize, WithTitle
             {
                 public function __construct(private Collection $rows) {}
 
@@ -80,7 +81,7 @@ class CombinedReportExport implements WithMultipleSheets
             new SubmissionReportExport($this->request, $this->reports),
             new QueueReportExport($this->request, $this->reports),
             new SurveyReportExport($this->request, $this->reports),
-            new class($unfinished, $this->reports->submissionHeaders()) implements FromCollection, WithHeadings, WithTitle, ShouldAutoSize
+            new class($unfinished, $this->reports->submissionHeaders()) implements FromCollection, ShouldAutoSize, WithHeadings, WithTitle
             {
                 public function __construct(private Collection $rows, private array $headers) {}
 
@@ -99,7 +100,7 @@ class CombinedReportExport implements WithMultipleSheets
                     return 'Pengajuan Belum Selesai';
                 }
             },
-            new class($feedback, $this->reports->surveyHeaders()) implements FromCollection, WithHeadings, WithTitle, ShouldAutoSize
+            new class($feedback, $this->reports->surveyHeaders()) implements FromCollection, ShouldAutoSize, WithHeadings, WithTitle
             {
                 public function __construct(private Collection $rows, private array $headers) {}
 

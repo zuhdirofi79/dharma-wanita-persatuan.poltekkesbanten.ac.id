@@ -9,11 +9,11 @@
     <div class="form-card" style="max-width:640px;margin:0 auto;">
         <div class="form-card-header">Tiket Antrean Layanan Akademik</div>
         <div class="form-card-body" style="display:block;text-align:center;">
-            <p style="margin:0;color:#64748b;">{{ $queue->queue_date->timezone('Asia/Jakarta')->translatedFormat('l, d F Y') }}</p>
+            <p style="margin:0;color:#64748b;">{{ format_wib($queue->queue_date, 'l, d F Y', false, true) }}</p>
             <div style="font-size:4rem;font-weight:800;color:#0f766e;line-height:1.1;margin:1rem 0;">{{ $queue->queue_code }}</div>
             <p style="margin:0;"><span class="status-badge">{{ $queue->statusLabel() }}</span></p>
             <table class="table" style="margin-top:1.5rem;text-align:left;">
-                <tr><th>Jam Ambil</th><td>{{ $queue->created_at->timezone('Asia/Jakarta')->format('H:i:s') }}</td></tr>
+                <tr><th>Jam Ambil</th><td>{{ format_wib($queue->created_at, 'H:i:s', false) }}</td></tr>
                 @if($queue->visitor_name)
                     <tr><th>Nama</th><td>{{ $queue->visitor_name }}</td></tr>
                 @endif

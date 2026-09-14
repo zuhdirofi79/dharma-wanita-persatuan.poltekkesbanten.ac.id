@@ -11,6 +11,7 @@ use App\Models\ReportExportLog;
 use App\Services\AcademicAuditReportService;
 use App\Services\AdminActivityLogger;
 use App\Services\ReportFilterService;
+use App\Support\AppTimezone;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -107,7 +108,7 @@ class ReportController extends Controller
     public function printSubmissions(Request $request)
     {
         $payload = $this->reports->submissionReportPayload($request, false);
-        $payload['generatedAt'] = now(ReportFilterService::TIMEZONE);
+        $payload['generatedAt'] = now(AppTimezone::name());
         $payload['printedBy'] = $request->user()?->name;
 
         return view('admin.reports.print.submissions', $payload);
@@ -116,7 +117,7 @@ class ReportController extends Controller
     public function printQueues(Request $request)
     {
         $payload = $this->reports->queueReportPayload($request, false);
-        $payload['generatedAt'] = now(ReportFilterService::TIMEZONE);
+        $payload['generatedAt'] = now(AppTimezone::name());
         $payload['printedBy'] = $request->user()?->name;
 
         return view('admin.reports.print.queues', $payload);
@@ -125,7 +126,7 @@ class ReportController extends Controller
     public function printSurveys(Request $request)
     {
         $payload = $this->reports->surveyReportPayload($request, false);
-        $payload['generatedAt'] = now(ReportFilterService::TIMEZONE);
+        $payload['generatedAt'] = now(AppTimezone::name());
         $payload['printedBy'] = $request->user()?->name;
 
         return view('admin.reports.print.surveys', $payload);
@@ -134,7 +135,7 @@ class ReportController extends Controller
     public function printCombined(Request $request)
     {
         $payload = $this->reports->combinedReportPayload($request);
-        $payload['generatedAt'] = now(ReportFilterService::TIMEZONE);
+        $payload['generatedAt'] = now(AppTimezone::name());
         $payload['printedBy'] = $request->user()?->name;
 
         return view('admin.reports.print.combined', $payload);
@@ -148,7 +149,7 @@ class ReportController extends Controller
         callable $csvFallback
     ): BinaryFileResponse|StreamedResponse {
         $format = strtolower((string) $request->input('format', 'xlsx'));
-        $stamp = now(ReportFilterService::TIMEZONE)->format('Ymd-Hi');
+        $stamp = now(AppTimezone::name())->format('Ymd-Hi');
 
         if ($format === 'csv') {
             $filename = "{$basename}-{$stamp}.csv";
@@ -167,9 +168,9 @@ class ReportController extends Controller
     {
         $period = $this->filters->resolvePeriod($request);
         $periodLabel = $this->filters->periodLabel($period);
-        $stamp = now(ReportFilterService::TIMEZONE)->format('Ymd-Hi');
+        $stamp = now(AppTimezone::name())->format('Ymd-Hi');
         $admin = $request->user()?->name ?? '-';
-        $generatedAt = now(ReportFilterService::TIMEZONE)->format('d/m/Y H:i').' WIB';
+        $generatedAt = now(AppTimezone::name())->format('d/m/Y H:i').' WIB';
 
         [$basename, $headers, $mapper, $query] = match ($type) {
             'queues' => [

@@ -158,7 +158,7 @@
                 @forelse($rows as $i => $row)
                     <tr>
                         <td>{{ $rows->firstItem() + $i }}</td>
-                        <td>{{ optional($row->created_at)?->timezone('Asia/Jakarta')->format('d/m/Y H:i') }}</td>
+                        <td>{{ format_wib($row->created_at) }}</td>
                         <td><a href="{{ route('admin.submissions.show', $row) }}">{{ $row->ticket_number }}</a></td>
                         <td>{{ $row->serviceType?->name }}</td>
                         <td>{{ $row->status }}</td>

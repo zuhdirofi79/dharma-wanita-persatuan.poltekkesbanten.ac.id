@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\AcademicQueueReportService;
 use App\Services\AdminActivityLogger;
+use App\Support\AppTimezone;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -25,7 +26,7 @@ class QueueReportController extends Controller
     public function print(Request $request)
     {
         $payload = $this->reports->reportPayload($request);
-        $payload['generatedAt'] = now('Asia/Jakarta');
+        $payload['generatedAt'] = AppTimezone::now();
 
         return view('admin.queues.print', $payload);
     }
@@ -33,7 +34,7 @@ class QueueReportController extends Controller
     public function export(Request $request): StreamedResponse
     {
         $payload = $this->reports->reportPayload($request);
-        $filename = 'laporan-antrean-layanan-akademik-'.now('Asia/Jakarta')->format('Ymd').'.csv';
+        $filename = 'laporan-antrean-layanan-akademik-'.AppTimezone::now()->format('Ymd').'.csv';
 
         $this->activityLogger->log(
             'queue_export',
@@ -74,10 +75,10 @@ class QueueReportController extends Controller
                     $row->visitor_type ?? '-',
                     $row->purposeDisplay(),
                     $row->statusLabel(),
-                    optional($row->created_at)?->timezone('Asia/Jakarta')->format('H:i:s') ?? '-',
-                    optional($row->called_at)?->timezone('Asia/Jakarta')->format('H:i:s') ?? '-',
-                    optional($row->served_at)?->timezone('Asia/Jakarta')->format('H:i:s') ?? '-',
-                    optional($row->finished_at)?->timezone('Asia/Jakarta')->format('H:i:s') ?? '-',
+                    format_wib($row->created_at, 'H:i:s', false),
+                    format_wib($row->called_at, 'H:i:s', false),
+                    format_wib($row->served_at, 'H:i:s', false),
+                    format_wib($row->finished_at, 'H:i:s', false),
                     $row->formatDuration($row->waitingSeconds()),
                     $row->formatDuration($row->serviceSeconds()),
                     $row->officerName(),

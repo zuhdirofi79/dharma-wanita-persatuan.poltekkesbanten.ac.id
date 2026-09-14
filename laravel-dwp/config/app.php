@@ -59,13 +59,26 @@ return [
     | Application Timezone
     |--------------------------------------------------------------------------
     |
-    | Here you may specify the default timezone for your application, which
-    | will be used by the PHP date and date-time functions. The timezone
-    | is set to "UTC" by default as it is suitable for most use cases.
+    | Eloquent storage timezone. Existing MySQL timestamps in this project
+    | were written as UTC wall-clock values. Keep this UTC so Carbon reads
+    | those values correctly. Do not change this to Asia/Jakarta without a
+    | data migration — presentation uses display_timezone instead.
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_STORAGE_TIMEZONE', 'UTC'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Display / Business Timezone
+    |--------------------------------------------------------------------------
+    |
+    | WIB (UTC+7). Used when showing timestamps, filtering by local dates,
+    | exporting reports, generating order codes, and "today" periods.
+    |
+    */
+
+    'display_timezone' => env('APP_TIMEZONE', 'Asia/Jakarta'),
 
     /*
     |--------------------------------------------------------------------------

@@ -31,7 +31,7 @@
         <tbody>
             @forelse($logs as $log)
                 <tr>
-                    <td>{{ $log->created_at->format('d/m/Y H:i') }}</td>
+                    <td>{{ format_wib($log->created_at) }}</td>
                     <td>{{ $log->user->name ?? '-' }}<br><small>{{ $log->user->email ?? '' }}</small></td>
                     <td><code>{{ $log->action }}</code></td>
                     <td>{{ $log->description }}</td>

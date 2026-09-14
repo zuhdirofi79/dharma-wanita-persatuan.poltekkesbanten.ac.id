@@ -166,7 +166,7 @@
         <tbody>
             @forelse($feedbackRows as $survey)
                 <tr>
-                    <td>{{ $survey->created_at->format('d/m/Y H:i') }}</td>
+                    <td>{{ format_wib($survey->created_at) }}</td>
                     <td>{{ $survey->serviceDisplayName() }}</td>
                     <td><span class="{{ $survey->satisfactionBadgeClass() }}">{{ $survey->satisfactionLabel() }}</span></td>
                     <td>{{ $survey->reason ?: '-' }}</td>

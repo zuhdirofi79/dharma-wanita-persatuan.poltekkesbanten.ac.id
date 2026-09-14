@@ -49,7 +49,7 @@
 
     <div class="print-meta">
         <p><strong>Periode laporan:</strong> {{ $periodLabel }}</p>
-        <p><strong>Tanggal cetak:</strong> {{ $generatedAt->format('d/m/Y H:i') }}</p>
+        <p><strong>Tanggal cetak:</strong> {{ format_wib($generatedAt) }}</p>
         <p><strong>Dokumen:</strong> Bukti monitoring, evaluasi, dan audit layanan akademik</p>
     </div>
 
@@ -159,7 +159,7 @@
             <tbody>
                 @forelse($feedbackRows as $survey)
                     <tr>
-                        <td>{{ $survey->created_at->format('d/m/Y H:i') }}</td>
+                        <td>{{ format_wib($survey->created_at) }}</td>
                         <td>{{ $survey->serviceDisplayName() }}</td>
                         <td>{{ $survey->satisfactionLabel() }}</td>
                         <td>{{ $survey->reason ?: '-' }}</td>

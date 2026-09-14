@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AdminActivityLog;
+use App\Support\AppTimezone;
 use Illuminate\Http\Request;
 
 class ActivityLogController extends Controller
@@ -20,13 +21,12 @@ class ActivityLogController extends Controller
             $query->where('user_id', $request->user_id);
         }
 
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->date_from);
-        }
-
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->date_to);
-        }
+        AppTimezone::applyLocalDateFilter(
+            $query,
+            'created_at',
+            $request->input('date_from'),
+            $request->input('date_to'),
+        );
 
         return view('admin.activity-logs.index', [
             'logs' => $query->paginate(30)->withQueryString(),

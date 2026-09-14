@@ -45,7 +45,7 @@
                     @endif
                 </p>
                 @if($order->payment_uploaded_at)
-                    <p><strong>Tanggal Upload Bukti:</strong> {{ $order->payment_uploaded_at->format('d/m/Y H:i') }}</p>
+                    <p><strong>Tanggal Upload Bukti:</strong> {{ format_wib($order->payment_uploaded_at) }}</p>
                 @endif
                 @if($order->rejection_note)
                     <p><strong>Catatan Penolakan:</strong> {{ $order->rejection_note }}</p>

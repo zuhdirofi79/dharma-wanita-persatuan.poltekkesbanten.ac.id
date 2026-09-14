@@ -179,8 +179,8 @@ class AcademicServiceQueue extends Model
             'purpose' => $this->purposeDisplay(),
             'status' => $this->status,
             'status_label' => $this->statusLabel(),
-            'called_at' => $this->called_at?->timezone('Asia/Jakarta')->format('H:i:s'),
-            'created_at' => $this->created_at?->timezone('Asia/Jakarta')->format('H:i:s'),
+            'called_at' => format_wib($this->called_at, 'H:i:s', false),
+            'created_at' => format_wib($this->created_at, 'H:i:s', false),
         ];
     }
 }

@@ -3,12 +3,13 @@
 namespace App\Services;
 
 use App\Models\Submission;
+use App\Support\AppTimezone;
 
 class TicketGenerator
 {
     public function generate(): string
     {
-        $year = now()->year;
+        $year = AppTimezone::now()->year;
         $prefix = "AKD-{$year}-";
 
         $last = Submission::query()

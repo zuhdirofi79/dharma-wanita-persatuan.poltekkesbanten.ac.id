@@ -202,14 +202,32 @@
             window.speechSynthesis.speak(utter);
         }
 
+        const displayTimezone = @json(config('app.display_timezone'));
+
+        function tickClock() {
+            const now = new Date();
+            els.date.textContent = new Intl.DateTimeFormat('id-ID', {
+                timeZone: displayTimezone,
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+            }).format(now);
+            els.time.textContent = new Intl.DateTimeFormat('id-ID', {
+                timeZone: displayTimezone,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
+            }).format(now);
+        }
+
         async function refresh() {
             try {
                 const res = await fetch(statusUrl, { headers: { 'Accept': 'application/json' } });
                 if (!res.ok) return;
                 const data = await res.json();
 
-                els.date.textContent = data.date;
-                els.time.textContent = data.time;
                 els.currentCode.textContent = data.current?.queue_code || '—';
                 els.currentStatus.textContent = data.current
                     ? 'Silakan menuju loket layanan akademik'
@@ -234,6 +252,8 @@
             }
         }
 
+        tickClock();
+        setInterval(tickClock, 1000);
         setInterval(refresh, 3000);
     </script>
 </body>

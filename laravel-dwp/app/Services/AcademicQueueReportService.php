@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\AcademicServiceQueue;
 use App\Models\User;
+use App\Support\AppTimezone;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ class AcademicQueueReportService
     public function applyPeriodDefaults(Request $request): array
     {
         $period = $request->input('period', 'today');
-        $today = Carbon::now('Asia/Jakarta')->startOfDay();
+        $today = AppTimezone::now()->startOfDay();
 
         $dateFrom = $request->input('date_from');
         $dateTo = $request->input('date_to');
@@ -113,7 +114,7 @@ class AcademicQueueReportService
         $byDay = $rows->groupBy(fn ($r) => $r->queue_date->format('Y-m-d'))
             ->map(fn (Collection $group, $date) => [
                 'date' => $date,
-                'label' => Carbon::parse($date)->timezone('Asia/Jakarta')->format('d/m'),
+                'label' => Carbon::parse($date, AppTimezone::name())->format('d/m'),
                 'total' => $group->count(),
             ])
             ->values();
@@ -140,7 +141,7 @@ class AcademicQueueReportService
             ->values()
             ->take(10);
 
-        $byHour = $rows->groupBy(fn ($r) => optional($r->created_at)?->timezone('Asia/Jakarta')->format('H') ?: '00')
+        $byHour = $rows->groupBy(fn ($r) => $r->created_at ? format_wib($r->created_at, 'H', false) : '00')
             ->map(fn (Collection $group, $hour) => [
                 'hour' => $hour.':00',
                 'total' => $group->count(),
@@ -184,8 +185,8 @@ class AcademicQueueReportService
 
     private function periodLabel(array $filters): string
     {
-        $from = Carbon::parse($filters['date_from'])->format('d/m/Y');
-        $to = Carbon::parse($filters['date_to'])->format('d/m/Y');
+        $from = Carbon::parse($filters['date_from'], AppTimezone::name())->format('d/m/Y');
+        $to = Carbon::parse($filters['date_to'], AppTimezone::name())->format('d/m/Y');
 
         return match ($filters['period']) {
             'today' => 'Hari ini ('.$from.')',

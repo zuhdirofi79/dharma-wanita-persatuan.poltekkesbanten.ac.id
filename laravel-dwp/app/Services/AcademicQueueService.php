@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\AcademicServiceQueue;
 use App\Models\ServiceType;
 use App\Models\User;
+use App\Support\AppTimezone;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\UniqueConstraintViolationException;
@@ -16,12 +17,12 @@ class AcademicQueueService
 {
     public function today(): string
     {
-        return now('Asia/Jakarta')->toDateString();
+        return AppTimezone::now()->toDateString();
     }
 
     public function nowJakarta(): Carbon
     {
-        return now('Asia/Jakarta');
+        return AppTimezone::now();
     }
 
     public function purposeOptions(): Collection
@@ -422,8 +423,8 @@ class AcademicQueueService
             'visitor_identity' => $queue->visitor_identity,
             'visitor_phone' => $queue->visitor_phone,
             'admin_note' => $queue->admin_note,
-            'served_at' => $queue->served_at?->timezone('Asia/Jakarta')->format('H:i:s'),
-            'finished_at' => $queue->finished_at?->timezone('Asia/Jakarta')->format('H:i:s'),
+            'served_at' => format_wib($queue->served_at, 'H:i:s', false),
+            'finished_at' => format_wib($queue->finished_at, 'H:i:s', false),
             'officer' => $queue->officerName(),
             'actions' => $this->availableActions($queue),
         ]);

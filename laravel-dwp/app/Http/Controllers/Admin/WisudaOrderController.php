@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DwpCatalogProduct;
 use App\Models\GraduationTogaOrder;
 use App\Models\StudyProgram;
+use App\Support\AppTimezone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -142,7 +143,7 @@ class WisudaOrderController extends Controller
     public function export(Request $request): StreamedResponse
     {
         $query = $this->filteredQuery($request)->with(['studyProgram', 'paymentVerifiedBy'])->latest();
-        $filename = 'rekap-pembayaran-toga-wisuda-'.now()->format('Ymd-Hi').'.csv';
+        $filename = 'rekap-pembayaran-toga-wisuda-'.AppTimezone::now()->format('Ymd-Hi').'.csv';
 
         return response()->streamDownload(function () use ($query) {
             $handle = fopen('php://output', 'w');
@@ -178,7 +179,7 @@ class WisudaOrderController extends Controller
                 foreach ($rows as $row) {
                     fputcsv($handle, [
                         $no++,
-                        $row->created_at?->format('Y-m-d H:i'),
+                        format_wib($row->created_at, 'Y-m-d H:i'),
                         $row->order_code,
                         $row->student_name,
                         $row->nim,
@@ -195,8 +196,8 @@ class WisudaOrderController extends Controller
                         $row->paymentStatusLabel(),
                         $row->hasPaymentProof() ? 'Ada' : 'Tidak',
                         $row->payment_proof_original_name ?: '-',
-                        $row->payment_uploaded_at?->format('Y-m-d H:i') ?: '-',
-                        $row->payment_verified_at?->format('Y-m-d H:i') ?: '-',
+                        format_wib($row->payment_uploaded_at, 'Y-m-d H:i'),
+                        format_wib($row->payment_verified_at, 'Y-m-d H:i'),
                         $row->paymentVerifiedBy?->name ?: '-',
                         $row->admin_note ?: '-',
                         $row->rejection_note ?: '-',
@@ -221,7 +222,7 @@ class WisudaOrderController extends Controller
             'orders' => $orders,
             'summary' => $this->summary($request),
             'periodLabel' => $this->periodLabel($request),
-            'generatedAt' => now(),
+            'generatedAt' => AppTimezone::now(),
             'filters' => $request->all(),
         ]);
     }
@@ -235,21 +236,15 @@ class WisudaOrderController extends Controller
             $query->where('study_program_id', $user->study_program_id);
         }
 
-        if ($request->filled('date_from')) {
-            $query->whereDate('created_at', '>=', $request->date_from);
-        }
-        if ($request->filled('date_to')) {
-            $query->whereDate('created_at', '<=', $request->date_to);
-        }
+        AppTimezone::applyLocalDateFilter(
+            $query,
+            'created_at',
+            $request->input('date_from'),
+            $request->input('date_to'),
+        );
 
         if ($request->filled('period')) {
-            match ($request->period) {
-                'today' => $query->whereDate('created_at', today()),
-                'week' => $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]),
-                'month' => $query->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year),
-                'year' => $query->whereYear('created_at', now()->year),
-                default => null,
-            };
+            AppTimezone::applyLocalPeriodFilter($query, 'created_at', (string) $request->period);
         }
 
         if ($request->filled('order_code')) {
@@ -311,11 +306,13 @@ class WisudaOrderController extends Controller
             return "{$from} s.d. {$to}";
         }
 
+        $now = AppTimezone::now();
+
         return match ($request->input('period')) {
-            'today' => 'Hari ini ('.now()->format('d/m/Y').')',
+            'today' => 'Hari ini ('.$now->format('d/m/Y').')',
             'week' => 'Minggu ini',
-            'month' => 'Bulan ini ('.now()->translatedFormat('F Y').')',
-            'year' => 'Tahun '.now()->year,
+            'month' => 'Bulan ini ('.$now->translatedFormat('F Y').')',
+            'year' => 'Tahun '.$now->year,
             default => 'Semua periode',
         };
     }

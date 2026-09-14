@@ -3,9 +3,13 @@
 namespace App\Providers;
 
 use App\Models\ServiceType;
+use App\Support\AppTimezone;
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -26,6 +30,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Carbon::setLocale((string) config('app.locale', 'id'));
+        CarbonImmutable::setLocale((string) config('app.locale', 'id'));
+
+        Carbon::macro('inDisplayTimezone', function () {
+            return $this->copy()->timezone(AppTimezone::name());
+        });
+        CarbonImmutable::macro('inDisplayTimezone', function () {
+            return $this->copy()->timezone(AppTimezone::name());
+        });
+
+        Blade::directive('wib', function (string $expression) {
+            return "<?php echo format_wib($expression); ?>";
+        });
+
         Paginator::defaultView('pagination.simple');
         Paginator::defaultSimpleView('pagination.simple');
 

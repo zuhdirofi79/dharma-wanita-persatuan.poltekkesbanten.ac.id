@@ -9,6 +9,7 @@ use App\Models\ServiceType;
 use App\Models\StudyProgram;
 use App\Models\Submission;
 use App\Models\User;
+use App\Support\AppTimezone;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -72,7 +73,7 @@ class AcademicAuditReportService
         $pending = (clone $submissionQuery)->where('status', SubmissionStatus::Submitted->value)->count();
         $emailSent = (clone $submissionQuery)->whereNotNull('email_sent_at')->count();
 
-        $today = Carbon::now(ReportFilterService::TIMEZONE)->toDateString();
+        $today = Carbon::now(AppTimezone::name())->toDateString();
         $queueToday = AcademicServiceQueue::query()->whereDate('queue_date', $today)->count();
         $queueServed = AcademicServiceQueue::query()
             ->whereDate('queue_date', '>=', $period['start_date'])
@@ -245,7 +246,7 @@ class AcademicAuditReportService
             ->values();
 
         $byMonth = $chartRows
-            ->groupBy(fn ($row) => $row->created_at?->timezone(ReportFilterService::TIMEZONE)->format('Y-m') ?: '-')
+            ->groupBy(fn ($row) => $row->created_at?->timezone(AppTimezone::name())->format('Y-m') ?: '-')
             ->map(fn (Collection $group, $key) => [
                 'label' => $key,
                 'total' => $group->count(),
@@ -275,7 +276,6 @@ class AcademicAuditReportService
 
     public function mapSubmissionRow(Submission $row, int $no): array
     {
-        $tz = ReportFilterService::TIMEZONE;
         $processed = $row->statusHistories
             ->first(fn ($h) => in_array($h->new_status, [
                 SubmissionStatus::Processing->value,
@@ -300,7 +300,7 @@ class AcademicAuditReportService
 
         return [
             'No' => $no,
-            'Tanggal Pengajuan' => $row->created_at?->timezone($tz)->format('d/m/Y H:i') ?? '-',
+            'Tanggal Pengajuan' => format_wib($row->created_at),
             'Nomor Tiket' => $row->ticket_number,
             'Jenis Layanan' => $row->serviceType?->name ?? '-',
             'Status Pengajuan' => $row->status,
@@ -312,14 +312,14 @@ class AcademicAuditReportService
             'Email Pengaju' => $row->email ?? '-',
             'Nomor HP/Telepon' => $row->whatsapp ?? '-',
             'Keterangan/Keperluan Surat' => $row->purpose ?? $row->additional_note ?? '-',
-            'Tanggal Diproses' => $processed?->created_at?->timezone($tz)->format('d/m/Y H:i') ?? '-',
-            'Tanggal Selesai' => $completedHistory?->created_at?->timezone($tz)->format('d/m/Y H:i') ?? '-',
+            'Tanggal Diproses' => format_wib($processed?->created_at),
+            'Tanggal Selesai' => format_wib($completedHistory?->created_at),
             'Admin Pemroses' => $processed?->changedByUser?->name ?? '-',
             'Catatan Admin' => $row->admin_note ?? '-',
             'File Final Ada/Tidak' => $row->finalFiles->isNotEmpty() ? 'Ada' : 'Tidak',
-            'Tanggal Upload File Final' => $finalFile?->created_at?->timezone($tz)->format('d/m/Y H:i') ?? '-',
+            'Tanggal Upload File Final' => format_wib($finalFile?->created_at),
             'Email Terkirim' => $row->email_sent_at ? 'Ya' : 'Tidak',
-            'Tanggal Email Terkirim' => $row->email_sent_at?->timezone($tz)->format('d/m/Y H:i') ?? '-',
+            'Tanggal Email Terkirim' => format_wib($row->email_sent_at),
             'Error Email' => $row->email_error ?? '-',
             'Link Progres' => $progressUrl,
             'Survei Kepuasan' => $survey ? 'Sudah' : 'Belum',
@@ -327,11 +327,11 @@ class AcademicAuditReportService
             'Alasan Kepuasan' => $survey?->reason ?? '-',
             'Saran/Masukan' => $survey?->feedback ?? '-',
             'Verifikasi ADAK Jurusan' => $row->jurusan_verified_at ? 'Sudah' : 'Belum',
-            'Tanggal Verifikasi Jurusan' => $row->jurusan_verified_at?->timezone($tz)->format('d/m/Y H:i') ?? '-',
+            'Tanggal Verifikasi Jurusan' => format_wib($row->jurusan_verified_at),
             'Verifikator Jurusan' => $row->jurusanVerifiedBy?->name ?? '-',
             'Catatan Verifikasi Jurusan' => $row->jurusan_verification_note ?? '-',
             'Verifikasi Admin Pusat' => $row->central_verified_at ? 'Sudah' : 'Belum',
-            'Tanggal Verifikasi Pusat' => $row->central_verified_at?->timezone($tz)->format('d/m/Y H:i') ?? '-',
+            'Tanggal Verifikasi Pusat' => format_wib($row->central_verified_at),
             'Verifikator Pusat' => $row->centralVerifiedBy?->name ?? '-',
             'Catatan Verifikasi Pusat' => $row->central_verification_note ?? '-',
             'Nama Kegiatan' => $row->activity_name ?? '-',
@@ -393,9 +393,9 @@ class AcademicAuditReportService
         if ($request->filled('hour')) {
             $hour = str_pad((string) ((int) $request->hour), 2, '0', STR_PAD_LEFT);
             if (DB::getDriverName() === 'sqlite') {
-                $query->whereRaw("strftime('%H', datetime(created_at, '+7 hours')) = ?", [$hour]);
+                $query->whereRaw("strftime('%H', datetime(created_at, ?)) = ?", [AppTimezone::sqliteShiftModifier(), $hour]);
             } else {
-                $query->whereRaw("DATE_FORMAT(CONVERT_TZ(created_at, '+00:00', '+07:00'), '%H') = ?", [$hour]);
+                $query->whereRaw("DATE_FORMAT(CONVERT_TZ(created_at, '+00:00', ?), '%H') = ?", [AppTimezone::utcOffset(), $hour]);
             }
         }
 
@@ -438,7 +438,7 @@ class AcademicAuditReportService
         $avgWait = count($waitSeconds) ? (int) round(array_sum($waitSeconds) / count($waitSeconds)) : null;
         $avgService = count($serviceSeconds) ? (int) round(array_sum($serviceSeconds) / count($serviceSeconds)) : null;
         $byHourGrouped = $allRows
-            ->groupBy(fn ($r) => $r->created_at?->timezone(ReportFilterService::TIMEZONE)->format('H') ?: '00');
+            ->groupBy(fn ($r) => $r->created_at?->timezone(AppTimezone::name())->format('H') ?: '00');
         $peakHour = $byHourGrouped->map->count()->sortDesc()->keys()->first();
 
         $topPurpose = $allRows
@@ -500,11 +500,9 @@ class AcademicAuditReportService
 
     public function mapQueueRow(AcademicServiceQueue $row, int $no): array
     {
-        $tz = ReportFilterService::TIMEZONE;
-
         return [
             'No' => $no,
-            'Tanggal' => $row->queue_date?->format('d/m/Y') ?? '-',
+            'Tanggal' => format_wib($row->queue_date, 'd/m/Y', false),
             'Nomor Antrean' => $row->queue_code,
             'Nama Pengunjung' => $row->visitor_name ?? '-',
             'Identitas' => $row->visitor_identity ?? '-',
@@ -512,10 +510,10 @@ class AcademicAuditReportService
             'Jenis Pengunjung' => $row->visitor_type ?? '-',
             'Keperluan Layanan' => $row->purposeDisplay(),
             'Status' => $row->statusLabel(),
-            'Jam Ambil Nomor' => $row->created_at?->timezone($tz)->format('H:i:s') ?? '-',
-            'Jam Dipanggil' => $row->called_at?->timezone($tz)->format('H:i:s') ?? '-',
-            'Jam Mulai Dilayani' => $row->served_at?->timezone($tz)->format('H:i:s') ?? '-',
-            'Jam Selesai' => $row->finished_at?->timezone($tz)->format('H:i:s') ?? '-',
+            'Jam Ambil Nomor' => format_wib($row->created_at, 'H:i:s', false),
+            'Jam Dipanggil' => format_wib($row->called_at, 'H:i:s', false),
+            'Jam Mulai Dilayani' => format_wib($row->served_at, 'H:i:s', false),
+            'Jam Selesai' => format_wib($row->finished_at, 'H:i:s', false),
             'Waktu Tunggu' => $row->formatDuration($row->waitingSeconds()),
             'Waktu Layanan' => $row->formatDuration($row->serviceSeconds()),
             'Petugas Panggil' => $row->calledBy?->name ?? '-',
@@ -644,11 +642,9 @@ class AcademicAuditReportService
 
     public function mapSurveyRow(AcademicSatisfactionSurvey $row, int $no): array
     {
-        $tz = ReportFilterService::TIMEZONE;
-
         return [
             'No' => $no,
-            'Tanggal Isi Survei' => $row->created_at?->timezone($tz)->format('d/m/Y H:i') ?? '-',
+            'Tanggal Isi Survei' => format_wib($row->created_at),
             'Nomor Tiket' => $row->ticket_number ?? '-',
             'Jenis Layanan' => $row->serviceDisplayName(),
             'Nama Responden' => $row->respondent_name ?? '-',
