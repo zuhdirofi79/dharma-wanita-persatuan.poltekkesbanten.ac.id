@@ -62,7 +62,7 @@
         <tbody>
             @forelse($surveys as $survey)
                 <tr>
-                    <td>{{ format_wib($survey->created_at) }}</td>
+                    <td>{{ \App\Support\AppTimezone::format($survey->created_at) }}</td>
                     <td><span class="{{ $survey->satisfactionBadgeClass() }}">{{ $survey->satisfactionLabel() }}</span></td>
                     <td>{{ $survey->serviceDisplayName() }}</td>
                     <td>{{ $survey->reason ?? '-' }}</td>

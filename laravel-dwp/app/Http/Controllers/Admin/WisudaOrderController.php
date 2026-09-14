@@ -179,7 +179,7 @@ class WisudaOrderController extends Controller
                 foreach ($rows as $row) {
                     fputcsv($handle, [
                         $no++,
-                        format_wib($row->created_at, 'Y-m-d H:i'),
+                        AppTimezone::format($row->created_at, 'Y-m-d H:i'),
                         $row->order_code,
                         $row->student_name,
                         $row->nim,
@@ -196,8 +196,8 @@ class WisudaOrderController extends Controller
                         $row->paymentStatusLabel(),
                         $row->hasPaymentProof() ? 'Ada' : 'Tidak',
                         $row->payment_proof_original_name ?: '-',
-                        format_wib($row->payment_uploaded_at, 'Y-m-d H:i'),
-                        format_wib($row->payment_verified_at, 'Y-m-d H:i'),
+                        AppTimezone::format($row->payment_uploaded_at, 'Y-m-d H:i'),
+                        AppTimezone::format($row->payment_verified_at, 'Y-m-d H:i'),
                         $row->paymentVerifiedBy?->name ?: '-',
                         $row->admin_note ?: '-',
                         $row->rejection_note ?: '-',

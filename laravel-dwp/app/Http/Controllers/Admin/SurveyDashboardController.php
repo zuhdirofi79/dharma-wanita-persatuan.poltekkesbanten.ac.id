@@ -68,7 +68,7 @@ class SurveyDashboardController extends Controller
             $query->chunk(200, function ($rows) use ($handle) {
                 foreach ($rows as $row) {
                     fputcsv($handle, [
-                        format_wib($row->created_at, 'Y-m-d H:i'),
+                        AppTimezone::format($row->created_at, 'Y-m-d H:i'),
                         $row->satisfactionLabel(),
                         $row->serviceDisplayName(),
                         $row->reason ?? '-',

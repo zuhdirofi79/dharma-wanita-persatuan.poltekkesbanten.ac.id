@@ -18,8 +18,17 @@ class AppTimezoneTest extends TestCase
     {
         $utc = Carbon::parse('2026-09-14 07:41:00', 'UTC');
 
-        $this->assertSame('14/09/2026 14:41 WIB', format_wib($utc));
+        $this->assertSame('14/09/2026 14:41 WIB', AppTimezone::format($utc));
         $this->assertSame('2026-09-14 07:41:00', $utc->format('Y-m-d H:i:s'));
+    }
+
+    public function test_helper_is_loaded_by_the_application_without_composer_files_autoload(): void
+    {
+        $this->assertTrue(function_exists('format_wib'));
+        $this->assertSame(
+            '14/09/2026 14:41 WIB',
+            format_wib(Carbon::parse('2026-09-14 07:41:00', 'UTC'))
+        );
     }
 
     public function test_local_date_filter_converts_wib_boundaries_to_utc(): void

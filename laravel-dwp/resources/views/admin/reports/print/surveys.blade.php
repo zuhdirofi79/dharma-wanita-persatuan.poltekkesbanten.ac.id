@@ -25,7 +25,7 @@
         @foreach($rows as $i => $row)
             <tr>
                 <td>{{ $i + 1 }}</td>
-                        <td>{{ format_wib($row->created_at, 'd/m/Y H:i') }}</td>
+                        <td>{{ \App\Support\AppTimezone::format($row->created_at, 'd/m/Y H:i') }}</td>
                 <td>{{ $row->ticket_number ?? '-' }}</td>
                 <td>{{ $row->serviceDisplayName() }}</td>
                 <td>{{ $row->respondent_name ?? '-' }}</td>

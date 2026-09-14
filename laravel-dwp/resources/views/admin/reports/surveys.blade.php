@@ -103,7 +103,7 @@
                 @forelse($rows as $i => $row)
                     <tr>
                         <td>{{ $rows->firstItem() + $i }}</td>
-                        <td>{{ format_wib($row->created_at) }}</td>
+                        <td>{{ \App\Support\AppTimezone::format($row->created_at) }}</td>
                         <td>{{ $row->ticket_number ?? '-' }}</td>
                         <td>{{ $row->serviceDisplayName() }}</td>
                         <td>{{ $row->respondent_name ?? '-' }}</td>

@@ -95,7 +95,7 @@
             <tbody>
                 @forelse($important_feedback as $row)
                     <tr>
-                        <td>{{ format_wib($row->created_at, 'd/m/Y', false) }}</td>
+                        <td>{{ \App\Support\AppTimezone::format($row->created_at, 'd/m/Y', false) }}</td>
                         <td>{{ $row->serviceDisplayName() }}</td>
                         <td>{{ $row->satisfactionLabel() }}</td>
                         <td>{{ $row->feedback }}</td>
@@ -126,7 +126,7 @@
                 @forelse($unfinished as $row)
                     <tr>
                         <td><a href="{{ route('admin.submissions.show', $row) }}">{{ $row->ticket_number }}</a></td>
-                        <td>{{ format_wib($row->created_at) }}</td>
+                        <td>{{ \App\Support\AppTimezone::format($row->created_at) }}</td>
                         <td>{{ $row->serviceType?->name }}</td>
                         <td>{{ $row->full_name }}</td>
                         <td>{{ $row->studyProgram?->name }}</td>

@@ -73,7 +73,7 @@
                         <tr><th>Nama</th><td>{{ $submission->full_name }}</td></tr>
                         <tr><th>Program Studi</th><td>{{ $submission->studyProgram->name }}</td></tr>
                         <tr><th>Status</th><td><span class="status-badge">{{ $submission->status }}</span></td></tr>
-                        <tr><th>Tanggal Pengajuan</th><td>{{ format_wib($submission->created_at) }}</td></tr>
+                        <tr><th>Tanggal Pengajuan</th><td>{{ \App\Support\AppTimezone::format($submission->created_at) }}</td></tr>
                         @if($submission->canDownloadResults())
                             <tr>
                                 <th>Survei Kepuasan</th>

@@ -36,7 +36,7 @@
         @forelse($unfinished as $row)
             <tr>
                 <td>{{ $row->ticket_number }}</td>
-                <td>{{ format_wib($row->created_at, 'd/m/Y', false) }}</td>
+                <td>{{ \App\Support\AppTimezone::format($row->created_at, 'd/m/Y', false) }}</td>
                 <td>{{ $row->serviceType?->name }}</td>
                 <td>{{ $row->full_name }}</td>
                 <td>{{ $row->status }}</td>
@@ -53,7 +53,7 @@
     <tbody>
         @forelse($important_feedback as $row)
             <tr>
-                <td>{{ format_wib($row->created_at, 'd/m/Y', false) }}</td>
+                <td>{{ \App\Support\AppTimezone::format($row->created_at, 'd/m/Y', false) }}</td>
                 <td>{{ $row->serviceDisplayName() }}</td>
                 <td>{{ $row->satisfactionLabel() }}</td>
                 <td>{{ $row->feedback }}</td>

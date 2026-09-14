@@ -68,7 +68,7 @@
             </td>
         </tr>
         <tr><th>Token Progres</th><td style="word-break:break-all;">{{ $submission->progress_token }}</td></tr>
-        <tr><th>Tanggal Pengajuan</th><td>{{ format_wib($submission->created_at) }}</td></tr>
+        <tr><th>Tanggal Pengajuan</th><td>{{ \App\Support\AppTimezone::format($submission->created_at) }}</td></tr>
         @if($submission->admin_note)<tr><th>Catatan Admin</th><td>{{ $submission->admin_note }}</td></tr>@endif
     </table>
 </div>
@@ -83,7 +83,7 @@
         <tr><th>Tingkat Kepuasan</th><td><span class="{{ $survey->satisfactionBadgeClass() }}">{{ $survey->satisfactionLabel() }}</span></td></tr>
         <tr><th>Alasan</th><td>{{ $survey->reason ?: '-' }}</td></tr>
         <tr><th>Saran/Masukan</th><td style="white-space:pre-wrap;">{{ $survey->feedback ?: '-' }}</td></tr>
-        <tr><th>Tanggal Survei</th><td>{{ format_wib($survey->created_at) }}</td></tr>
+        <tr><th>Tanggal Survei</th><td>{{ \App\Support\AppTimezone::format($survey->created_at) }}</td></tr>
     </table>
 </div>
 @endif
@@ -115,7 +115,7 @@
                 <strong>{{ $submission->jurusan_verified_at ? 'Sudah Diverifikasi' : 'Belum Diverifikasi' }}</strong>
             </p>
             <p>Verifikator: {{ $submission->jurusanVerifiedBy->name ?? '-' }}</p>
-            <p>Waktu verifikasi: {{ format_wib($submission->jurusan_verified_at) }}</p>
+            <p>Waktu verifikasi: {{ \App\Support\AppTimezone::format($submission->jurusan_verified_at) }}</p>
             <p>Catatan: {{ $submission->jurusan_verification_note ?: '-' }}</p>
 
             @if($canVerifyJurusan)
@@ -137,7 +137,7 @@
                 <strong>{{ $submission->central_verified_at ? 'Sudah Diverifikasi' : 'Belum Diverifikasi' }}</strong>
             </p>
             <p>Verifikator: {{ $submission->centralVerifiedBy->name ?? '-' }}</p>
-            <p>Waktu verifikasi: {{ format_wib($submission->central_verified_at) }}</p>
+            <p>Waktu verifikasi: {{ \App\Support\AppTimezone::format($submission->central_verified_at) }}</p>
             <p>Catatan: {{ $submission->central_verification_note ?: '-' }}</p>
 
             @if(! $submission->jurusan_verified_at)
@@ -243,7 +243,7 @@
     </div>
 
     @if($submission->email_sent_at)
-        <p style="margin-top:1rem;color:#059669;">Email terakhir dikirim: {{ format_wib($submission->email_sent_at) }}</p>
+        <p style="margin-top:1rem;color:#059669;">Email terakhir dikirim: {{ \App\Support\AppTimezone::format($submission->email_sent_at) }}</p>
     @endif
     @if($submission->email_error)
         <p style="color:#dc2626;">Error email: {{ $submission->email_error }}</p>
@@ -262,7 +262,7 @@
         <tbody>
             @foreach($submission->statusHistories as $history)
                 <tr>
-                    <td>{{ format_wib($history->created_at) }}</td>
+                    <td>{{ \App\Support\AppTimezone::format($history->created_at) }}</td>
                     <td>{{ $history->old_status ?? '-' }}</td>
                     <td>{{ $history->new_status }}</td>
                     <td>{{ $history->note ?? '-' }}</td>

@@ -270,7 +270,7 @@ class SubmissionController extends Controller
                         $row->email,
                         $row->whatsapp,
                         $row->status,
-                        format_wib($row->created_at, 'Y-m-d H:i'),
+                        AppTimezone::format($row->created_at, 'Y-m-d H:i'),
                     ]);
                 }
             });

@@ -26,7 +26,7 @@ class CombinedReportExport implements WithMultipleSheets
         $payload = $this->reports->combinedReportPayload($this->request);
         $period = $this->filterService->resolvePeriod($this->request);
         $admin = $this->request->user()?->name ?? '-';
-        $generatedAt = format_wib(AppTimezone::now());
+        $generatedAt = AppTimezone::format(AppTimezone::now());
 
         $summaryRows = collect([
             ['Laporan Gabungan Pelayanan Akademik'],

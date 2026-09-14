@@ -423,8 +423,8 @@ class AcademicQueueService
             'visitor_identity' => $queue->visitor_identity,
             'visitor_phone' => $queue->visitor_phone,
             'admin_note' => $queue->admin_note,
-            'served_at' => format_wib($queue->served_at, 'H:i:s', false),
-            'finished_at' => format_wib($queue->finished_at, 'H:i:s', false),
+            'served_at' => AppTimezone::format($queue->served_at, 'H:i:s', false),
+            'finished_at' => AppTimezone::format($queue->finished_at, 'H:i:s', false),
             'officer' => $queue->officerName(),
             'actions' => $this->availableActions($queue),
         ]);

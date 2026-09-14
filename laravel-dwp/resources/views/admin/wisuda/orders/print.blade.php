@@ -27,7 +27,7 @@
     <h1 style="margin-bottom:0.25rem;">Rekap Pemesanan dan Pembayaran Toga Wisuda</h1>
     <h2 style="margin-top:0;font-size:1.05rem;color:#334155;">Poltekkes Kemenkes Banten Tahun 2026/2027</h2>
     <p><strong>Periode laporan:</strong> {{ $periodLabel }}</p>
-    <p><strong>Dicetak:</strong> {{ format_wib($generatedAt) }}</p>
+    <p><strong>Dicetak:</strong> {{ \App\Support\AppTimezone::format($generatedAt) }}</p>
 
     <div class="summary">
         <div><strong>Total Pesanan:</strong> {{ $summary['total_orders'] }}</div>
@@ -60,7 +60,7 @@
             @forelse($orders as $index => $order)
                 <tr>
                     <td>{{ $index + 1 }}</td>
-                    <td>{{ format_wib($order->created_at, 'd/m/Y', false) }}</td>
+                    <td>{{ \App\Support\AppTimezone::format($order->created_at, 'd/m/Y', false) }}</td>
                     <td>{{ $order->order_code }}</td>
                     <td>{{ $order->student_name }}</td>
                     <td>{{ $order->nim }}</td>
@@ -72,7 +72,7 @@
                     <td>{{ $order->statusLabel() }}</td>
                     <td>{{ $order->paymentStatusLabel() }}</td>
                     <td>{{ $order->hasPaymentProof() ? 'Ada' : 'Tidak' }}</td>
-                    <td>{{ format_wib($order->payment_uploaded_at) }}</td>
+                    <td>{{ \App\Support\AppTimezone::format($order->payment_uploaded_at) }}</td>
                     <td>{{ $order->paymentVerifiedBy?->name ?: '-' }}</td>
                 </tr>
             @empty

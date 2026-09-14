@@ -14,7 +14,7 @@
 <div class="admin-card" style="margin-top:1rem;">
     <h3 style="margin-top:0;">{{ $order->order_code }}</h3>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0.75rem 1.5rem;">
-        <p><strong>Tanggal Pesan:</strong> {{ format_wib($order->created_at) }}</p>
+        <p><strong>Tanggal Pesan:</strong> {{ \App\Support\AppTimezone::format($order->created_at) }}</p>
         <p><strong>Nama:</strong> {{ $order->student_name }}</p>
         <p><strong>NIM:</strong> {{ $order->nim }}</p>
         @if(filled($order->nik))
@@ -32,10 +32,10 @@
         <p><strong>Perkiraan total:</strong> {{ $togaProduct->estimatedTotal((int) $order->quantity) }}</p>
         <p><strong>Status Pesanan:</strong> {{ $order->statusLabel() }}</p>
         <p><strong>Status Pembayaran:</strong> {{ $order->paymentStatusLabel() }}</p>
-        <p><strong>Upload Bukti:</strong> {{ format_wib($order->payment_uploaded_at) }}</p>
-        <p><strong>Verifikasi:</strong> {{ format_wib($order->payment_verified_at) }}</p>
+        <p><strong>Upload Bukti:</strong> {{ \App\Support\AppTimezone::format($order->payment_uploaded_at) }}</p>
+        <p><strong>Verifikasi:</strong> {{ \App\Support\AppTimezone::format($order->payment_verified_at) }}</p>
         <p><strong>Verifikator:</strong> {{ $order->paymentVerifiedBy?->name ?: '-' }}</p>
-        <p><strong>Penolakan:</strong> {{ format_wib($order->payment_rejected_at) }}</p>
+        <p><strong>Penolakan:</strong> {{ \App\Support\AppTimezone::format($order->payment_rejected_at) }}</p>
         <p><strong>Ditolak oleh:</strong> {{ $order->paymentRejectedBy?->name ?: '-' }}</p>
     </div>
 

@@ -49,7 +49,7 @@
 </form>
 
 <div class="admin-card" id="submissions-table">
-    <h3 class="print-only" style="display:none;">Rekap Pengajuan Layanan Akademik — {{ format_wib(now()) }}</h3>
+    <h3 class="print-only" style="display:none;">Rekap Pengajuan Layanan Akademik — {{ \App\Support\AppTimezone::format(now()) }}</h3>
     <table class="table">
         <thead>
             <tr>
@@ -69,7 +69,7 @@
             @forelse($submissions as $submission)
                 <tr>
                     <td>{{ $submission->ticket_number }}</td>
-                    <td>{{ format_wib($submission->created_at, 'd/m/Y', false) }}</td>
+                    <td>{{ \App\Support\AppTimezone::format($submission->created_at, 'd/m/Y', false) }}</td>
                     <td>{{ $submission->full_name }}</td>
                     <td>{{ $submission->nim }}</td>
                     <td>{{ $submission->studyProgram->name }}</td>

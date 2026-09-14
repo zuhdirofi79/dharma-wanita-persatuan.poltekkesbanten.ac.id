@@ -22,7 +22,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $helpers = app_path('helpers.php');
+
+        if (is_file($helpers)) {
+            require_once $helpers;
+        }
     }
 
     /**
@@ -41,7 +45,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Blade::directive('wib', function (string $expression) {
-            return "<?php echo format_wib($expression); ?>";
+            return "<?php echo \\App\\Support\\AppTimezone::format($expression); ?>";
         });
 
         Paginator::defaultView('pagination.simple');

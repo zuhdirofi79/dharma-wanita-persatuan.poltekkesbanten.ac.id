@@ -141,7 +141,7 @@ class AcademicQueueReportService
             ->values()
             ->take(10);
 
-        $byHour = $rows->groupBy(fn ($r) => $r->created_at ? format_wib($r->created_at, 'H', false) : '00')
+        $byHour = $rows->groupBy(fn ($r) => $r->created_at ? AppTimezone::format($r->created_at, 'H', false) : '00')
             ->map(fn (Collection $group, $hour) => [
                 'hour' => $hour.':00',
                 'total' => $group->count(),

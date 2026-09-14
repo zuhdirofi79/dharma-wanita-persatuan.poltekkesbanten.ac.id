@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\AppTimezone;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -179,8 +180,8 @@ class AcademicServiceQueue extends Model
             'purpose' => $this->purposeDisplay(),
             'status' => $this->status,
             'status_label' => $this->statusLabel(),
-            'called_at' => format_wib($this->called_at, 'H:i:s', false),
-            'created_at' => format_wib($this->created_at, 'H:i:s', false),
+            'called_at' => AppTimezone::format($this->called_at, 'H:i:s', false),
+            'created_at' => AppTimezone::format($this->created_at, 'H:i:s', false),
         ];
     }
 }

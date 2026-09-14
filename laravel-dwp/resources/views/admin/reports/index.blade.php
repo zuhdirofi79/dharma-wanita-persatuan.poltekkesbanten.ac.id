@@ -69,7 +69,7 @@
             <tbody>
                 @foreach($exportLogs as $log)
                     <tr>
-                        <td>{{ format_wib($log->exported_at) }}</td>
+                        <td>{{ \App\Support\AppTimezone::format($log->exported_at) }}</td>
                         <td>{{ $log->user?->name ?? '-' }}</td>
                         <td>{{ $log->report_type }}</td>
                         <td>{{ strtoupper($log->format) }}</td>
