@@ -11,20 +11,22 @@ use App\Http\Controllers\Admin\QueueController;
 use App\Http\Controllers\Admin\QueueReportController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\SatisfactionSurveyController as AdminSatisfactionSurveyController;
-use App\Http\Controllers\Admin\SurveyDashboardController;
 use App\Http\Controllers\Admin\StudyProgramController;
 use App\Http\Controllers\Admin\SubmissionController;
+use App\Http\Controllers\Admin\SurveyDashboardController;
 use App\Http\Controllers\Admin\TestEmailController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\WisudaOrderController;
+use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\FileDownloadController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\PublicQueueController;
 use App\Http\Controllers\SatisfactionSurveyController;
 use App\Http\Controllers\ServiceFormController;
+use App\Http\Controllers\Student\AuthController as StudentAuthController;
+use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\WisudaController;
 use App\Support\ServiceFormConfig;
 use Illuminate\Support\Facades\Route;
@@ -66,7 +68,7 @@ $serviceRoutes = [
 foreach ($serviceRoutes as $slug) {
     Route::get("/layanan/{$slug}", [ServiceFormController::class, 'show'])
         ->defaults('slug', $slug)
-        ->name('services.' . str_replace('-', '_', $slug));
+        ->name('services.'.str_replace('-', '_', $slug));
     Route::post("/layanan/{$slug}", [ServiceFormController::class, 'store'])
         ->defaults('slug', $slug)
         ->middleware('throttle:5,1');
@@ -100,16 +102,37 @@ Route::get('/antrean/kiosk', [PublicQueueController::class, 'kiosk'])->name('que
 Route::get('/antrean/{queue}/print', [PublicQueueController::class, 'print'])->name('queues.print');
 Route::get('/antrean/{queue}', [PublicQueueController::class, 'ticket'])->name('queues.ticket');
 
+Route::middleware('guest.student')->group(function () {
+    Route::get('/login', [StudentAuthController::class, 'showLogin'])->name('student.login');
+    Route::post('/login', [StudentAuthController::class, 'login'])
+        ->name('student.login.submit')
+        ->middleware('throttle:5,1');
+    Route::get('/register', [StudentAuthController::class, 'showRegister'])->name('student.register');
+    Route::post('/register', [StudentAuthController::class, 'register'])
+        ->name('student.register.submit')
+        ->middleware('throttle:5,1');
+});
+
+Route::post('/logout', [StudentAuthController::class, 'logout'])
+    ->middleware('auth')
+    ->name('student.logout');
+
 Route::get('/wisuda', [WisudaController::class, 'index'])->name('wisuda.index');
-Route::get('/wisuda/pesan', [WisudaController::class, 'createOrder'])->name('wisuda.order.create');
-Route::post('/wisuda/pesan', [WisudaController::class, 'storeOrder'])
-    ->name('wisuda.order.store')
-    ->middleware('throttle:10,1');
 Route::get('/wisuda/pesanan/{orderCode}', [WisudaController::class, 'showOrder'])->name('wisuda.order.show');
 Route::get('/wisuda/pesanan/{orderCode}/pembayaran', [WisudaController::class, 'payment'])->name('wisuda.payment');
 Route::post('/wisuda/pesanan/{orderCode}/upload-bukti-pembayaran', [WisudaController::class, 'uploadPaymentProof'])
     ->name('wisuda.payment.upload')
     ->middleware('throttle:10,1');
+
+Route::middleware(['auth', 'student'])->group(function () {
+    Route::get('/dashboard', [StudentDashboardController::class, 'index'])->name('student.dashboard');
+    Route::get('/wisuda/pesanan-saya', [StudentDashboardController::class, 'myOrder'])->name('student.orders.show');
+    Route::get('/wisuda/pembayaran-terverifikasi', [StudentDashboardController::class, 'verified'])->name('wisuda.payment.verified');
+    Route::get('/wisuda/pesan', [WisudaController::class, 'createOrder'])->name('wisuda.order.create');
+    Route::post('/wisuda/pesan', [WisudaController::class, 'storeOrder'])
+        ->name('wisuda.order.store')
+        ->middleware('throttle:10,1');
+});
 
 Route::get('/download/{submission}/{file}', [FileDownloadController::class, 'download'])
     ->name('download.file');

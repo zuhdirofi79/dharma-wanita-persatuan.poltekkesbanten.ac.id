@@ -25,7 +25,21 @@
             <a href="{{ route('layanan') }}" class="site-nav-link {{ request()->routeIs('layanan') ? 'active' : '' }}">Layanan</a>
             <a href="{{ route('wisuda.index') }}" class="site-nav-link {{ request()->routeIs('wisuda.*') ? 'active' : '' }}">Wisuda</a>
             <a href="{{ route('kontak') }}" class="site-nav-link {{ request()->routeIs('kontak') ? 'active' : '' }}">Kontak</a>
-            <a href="{{ route('admin.login') }}" class="site-admin-login">Login Admin</a>
+            @auth
+                @if(auth()->user()->isStudent())
+                    <a href="{{ route('student.dashboard') }}" class="site-nav-link {{ request()->routeIs('student.dashboard') ? 'active' : '' }}">Dashboard</a>
+                    <a href="{{ route('student.orders.show') }}" class="site-nav-link {{ request()->routeIs('student.orders.show', 'wisuda.payment', 'wisuda.payment.verified', 'wisuda.order.show') ? 'active' : '' }}">Pesanan Saya</a>
+                    <form method="POST" action="{{ route('student.logout') }}" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="site-admin-login" style="border:0;background:transparent;cursor:pointer;">Logout</button>
+                    </form>
+                @elseif(auth()->user()->isStaff())
+                    <a href="{{ route('admin.dashboard') }}" class="site-admin-login">Dashboard Admin</a>
+                @endif
+            @else
+                <a href="{{ route('student.login') }}" class="site-nav-link {{ request()->routeIs('student.login', 'student.register') ? 'active' : '' }}">Login Mahasiswa</a>
+                <a href="{{ route('admin.login') }}" class="site-admin-login">Login Admin</a>
+            @endauth
         </nav>
     </div>
 </header>

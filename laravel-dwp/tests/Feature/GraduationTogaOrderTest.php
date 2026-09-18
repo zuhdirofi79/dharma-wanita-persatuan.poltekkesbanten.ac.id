@@ -28,8 +28,9 @@ class GraduationTogaOrderTest extends TestCase
     public function test_new_nim_creates_order_and_nim_lock(): void
     {
         $program = $this->studyProgram();
+        $student = $this->student('TEST2026001');
 
-        $response = $this->from(route('wisuda.index'))->post(route('wisuda.order.store'), $this->validPayload(
+        $response = $this->actingAs($student)->from(route('wisuda.order.create'))->post(route('wisuda.order.store'), $this->validPayload(
             $program->id,
             'TEST2026001',
         ));
@@ -39,7 +40,6 @@ class GraduationTogaOrderTest extends TestCase
         $this->assertNotNull($order);
         $response->assertRedirect(route('wisuda.order.show', [
             'orderCode' => $order->order_code,
-            'token' => $order->public_token,
         ]));
         $this->assertSame(1, GraduationTogaOrder::query()->count());
         $this->assertDatabaseHas('graduation_toga_order_nim_locks', [
@@ -53,21 +53,16 @@ class GraduationTogaOrderTest extends TestCase
     public function test_duplicate_exact_nim_is_rejected(): void
     {
         $program = $this->studyProgram();
+        $student = $this->student('TEST2026001');
         $payload = $this->validPayload($program->id, 'TEST2026001');
 
-        $this->post(route('wisuda.order.store'), $payload)->assertRedirect();
+        $this->actingAs($student)->post(route('wisuda.order.store'), $payload)->assertRedirect();
         $this->assertSame(1, GraduationTogaOrder::query()->count());
 
-        $response = $this->from(route('wisuda.index'))
-            ->post(route('wisuda.order.store'), array_merge($payload, [
-                'student_name' => 'Mahasiswa Kedua',
-                'email' => 'kedua@example.test',
-            ]));
+        $response = $this->actingAs($student)->from(route('wisuda.order.create'))
+            ->post(route('wisuda.order.store'), $payload);
 
-        $response->assertRedirect(route('wisuda.index'));
-        $response->assertSessionHasErrors(['nim' => GraduationTogaOrderService::DUPLICATE_NIM_MESSAGE]);
-        $response->assertSessionHasInput('student_name', 'Mahasiswa Kedua');
-        $response->assertSessionHasInput('nim', 'TEST2026001');
+        $response->assertRedirect();
         $this->assertSame(1, GraduationTogaOrder::query()->count());
         $this->assertSame(1, GraduationTogaOrderNimLock::query()->count());
     }
@@ -75,21 +70,18 @@ class GraduationTogaOrderTest extends TestCase
     public function test_normalized_duplicate_nim_is_rejected(): void
     {
         $program = $this->studyProgram();
-        $this->post(route('wisuda.order.store'), $this->validPayload($program->id, 'TEST2026001'))->assertRedirect();
+        $student = $this->student('TEST2026001');
+        $this->actingAs($student)->post(route('wisuda.order.store'), $this->validPayload($program->id, 'TEST2026001'))->assertRedirect();
 
-        foreach (['test2026001', ' TEST2026001', 'TEST-2026-001'] as $index => $nim) {
-            $response = $this->from(route('wisuda.index'))->post(route('wisuda.order.store'), $this->validPayload(
-                $program->id,
-                $nim,
-                [
-                    'email' => 'variant'.$index.'@example.test',
-                ],
-            ));
+        $response = $this->actingAs($student)->from(route('wisuda.order.create'))->post(route('wisuda.order.store'), $this->validPayload(
+            $program->id,
+            'TEST-2026-001',
+            [
+                'email' => 'variant@example.test',
+            ],
+        ));
 
-            $response->assertRedirect(route('wisuda.index'));
-            $response->assertSessionHasErrors('nim');
-        }
-
+        $response->assertRedirect();
         $this->assertSame(1, GraduationTogaOrder::query()->count());
     }
 
@@ -108,14 +100,14 @@ class GraduationTogaOrderTest extends TestCase
         $this->assertSame(2, GraduationTogaOrder::query()->where('nim', 'P12345')->count());
         $this->assertSame(1, GraduationTogaOrderNimLock::query()->where('nim_normalized', 'P12345')->count());
 
-        $response = $this->from(route('wisuda.index'))->post(route('wisuda.order.store'), $this->validPayload(
+        $student = $this->student('P12345');
+        $response = $this->actingAs($student)->from(route('wisuda.order.create'))->post(route('wisuda.order.store'), $this->validPayload(
             $program->id,
             'P12345',
             ['email' => 'third@example.test'],
         ));
 
-        $response->assertRedirect(route('wisuda.index'));
-        $response->assertSessionHasErrors(['nim' => GraduationTogaOrderService::DUPLICATE_NIM_MESSAGE]);
+        $response->assertRedirect();
         $this->assertSame(2, GraduationTogaOrder::query()->count());
     }
 
@@ -125,9 +117,10 @@ class GraduationTogaOrderTest extends TestCase
         $payload = $this->validPayload($program->id, 'TEST2026003');
         unset($payload['transfer_sender_name']);
 
-        $response = $this->from(route('wisuda.index'))->post(route('wisuda.order.store'), $payload);
+        $student = $this->student('TEST2026003');
+        $response = $this->actingAs($student)->from(route('wisuda.order.create'))->post(route('wisuda.order.store'), $payload);
 
-        $response->assertRedirect(route('wisuda.index'));
+        $response->assertRedirect(route('wisuda.order.create'));
         $response->assertSessionHasErrors('transfer_sender_name');
         $this->assertSame(0, GraduationTogaOrder::query()->count());
         $this->assertSame(0, GraduationTogaOrderNimLock::query()->count());
@@ -137,11 +130,13 @@ class GraduationTogaOrderTest extends TestCase
     {
         $program = $this->studyProgram();
 
-        $this->post(route('wisuda.order.store'), $this->validPayload(
+        $student = $this->student('TEST2026002', 'Mahasiswa Test');
+
+        $this->actingAs($student)->post(route('wisuda.order.store'), $this->validPayload(
             $program->id,
             'TEST2026002',
             [
-                'student_name' => 'Mahasiswa Test',
+                'student_name' => 'Nama Palsu',
                 'transfer_sender_name' => 'Budi Santoso',
             ],
         ))->assertRedirect();
@@ -216,8 +211,7 @@ class GraduationTogaOrderTest extends TestCase
             'Jam layanan narahubung: Senin–Jumat, pukul 09.00–16.00 WIB. Mohon tidak menghubungi di luar jam layanan.',
             false,
         );
-        $response->assertSee('Setiap NIM hanya dapat melakukan satu kali pemesanan toga.', false);
-        $response->assertSee('Nama Orang Tua/Pengirim Transfer', false);
+        $response->assertSee('Login Mahasiswa', false);
         $response->assertDontSee('NIK', false);
         $response->assertDontSee('captcha', false);
         $response->assertSee('Rp. 200.000', false);
@@ -286,6 +280,18 @@ class GraduationTogaOrderTest extends TestCase
         return StudyProgram::query()->create([
             'name' => 'D3 Keperawatan',
             'is_active' => true,
+        ]);
+    }
+
+    private function student(string $nim, string $name = 'Mahasiswa Test'): User
+    {
+        return User::factory()->create([
+            'name' => $name,
+            'email' => strtolower($nim).'@mahasiswa.dwp.invalid',
+            'nim' => $nim,
+            'role' => 'mahasiswa',
+            'is_active' => true,
+            'must_change_password' => false,
         ]);
     }
 

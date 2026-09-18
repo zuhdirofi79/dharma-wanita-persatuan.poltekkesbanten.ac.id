@@ -1,5 +1,12 @@
 <?php
 
+use App\Http\Middleware\EnsureCanDeleteAdmins;
+use App\Http\Middleware\EnsureCanManageAdmins;
+use App\Http\Middleware\EnsureCanManageCatalog;
+use App\Http\Middleware\EnsureMustChangePassword;
+use App\Http\Middleware\EnsureRole;
+use App\Http\Middleware\EnsureStudent;
+use App\Http\Middleware\RedirectIfStudentAuthenticated;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,11 +20,13 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'role' => \App\Http\Middleware\EnsureRole::class,
-            'must.change.password' => \App\Http\Middleware\EnsureMustChangePassword::class,
-            'catalog.manage' => \App\Http\Middleware\EnsureCanManageCatalog::class,
-            'admins.manage' => \App\Http\Middleware\EnsureCanManageAdmins::class,
-            'admins.delete' => \App\Http\Middleware\EnsureCanDeleteAdmins::class,
+            'role' => EnsureRole::class,
+            'must.change.password' => EnsureMustChangePassword::class,
+            'catalog.manage' => EnsureCanManageCatalog::class,
+            'admins.manage' => EnsureCanManageAdmins::class,
+            'admins.delete' => EnsureCanDeleteAdmins::class,
+            'student' => EnsureStudent::class,
+            'guest.student' => RedirectIfStudentAuthenticated::class,
         ]);
 
         $middleware->redirectGuestsTo(function (Request $request) {
@@ -25,7 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 return route('admin.login');
             }
 
-            return route('beranda');
+            return route('student.login');
         });
     })
     ->withExceptions(function (Exceptions $exceptions): void {

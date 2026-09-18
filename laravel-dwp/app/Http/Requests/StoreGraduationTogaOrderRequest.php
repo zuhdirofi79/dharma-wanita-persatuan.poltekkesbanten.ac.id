@@ -19,8 +19,8 @@ class StoreGraduationTogaOrderRequest extends FormRequest
     {
         $this->merge([
             'toga_size' => 'All Size',
-            'student_name' => trim((string) $this->input('student_name')),
-            'nim' => trim((string) $this->input('nim')),
+            'student_name' => $this->resolvedStudentName(),
+            'nim' => $this->resolvedNim(),
             'transfer_sender_name' => trim((string) $this->input('transfer_sender_name')),
         ]);
     }
@@ -78,5 +78,27 @@ class StoreGraduationTogaOrderRequest extends FormRequest
                 $validator->errors()->add('nim', GraduationTogaOrderService::DUPLICATE_NIM_MESSAGE);
             }
         });
+    }
+
+    private function resolvedNim(): string
+    {
+        $user = $this->user();
+
+        if ($user?->isStudent()) {
+            return (string) $user->nim;
+        }
+
+        return trim((string) $this->input('nim'));
+    }
+
+    private function resolvedStudentName(): string
+    {
+        $user = $this->user();
+
+        if ($user?->isStudent()) {
+            return (string) $user->name;
+        }
+
+        return trim((string) $this->input('student_name'));
     }
 }

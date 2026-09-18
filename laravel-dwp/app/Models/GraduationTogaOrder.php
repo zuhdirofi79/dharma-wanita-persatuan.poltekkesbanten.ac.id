@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 class GraduationTogaOrder extends Model
 {
     protected $fillable = [
+        'user_id',
         'order_code',
         'student_name',
         'nim',
@@ -53,6 +54,11 @@ class GraduationTogaOrder extends Model
             'payment_verified_at' => 'datetime',
             'payment_rejected_at' => 'datetime',
         ];
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function studyProgram(): BelongsTo
@@ -142,5 +148,32 @@ class GraduationTogaOrder extends Model
     {
         return $this->study_program_name
             ?: ($this->studyProgram?->name ?? '-');
+    }
+
+    public function isPaymentVerified(): bool
+    {
+        return $this->payment_status === 'verified'
+            || in_array($this->status, ['payment_verified', 'completed'], true);
+    }
+
+    public function isAwaitingVerification(): bool
+    {
+        return $this->payment_status === 'uploaded'
+            || $this->status === 'payment_uploaded';
+    }
+
+    public function isAwaitingPayment(): bool
+    {
+        return in_array($this->payment_status, ['unpaid', 'rejected'], true)
+            || in_array($this->status, ['pending_payment', 'payment_rejected'], true);
+    }
+
+    public function allowsPaymentProofUpload(): bool
+    {
+        if (in_array($this->status, ['cancelled', 'completed'], true)) {
+            return false;
+        }
+
+        return $this->payment_status !== 'verified';
     }
 }

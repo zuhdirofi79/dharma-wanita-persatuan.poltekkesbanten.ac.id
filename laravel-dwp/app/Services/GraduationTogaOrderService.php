@@ -56,6 +56,7 @@ class GraduationTogaOrderService
                 'status' => 'pending_payment',
                 'payment_status' => 'unpaid',
                 'public_token' => GraduationTogaOrder::generatePublicToken(),
+                'user_id' => $data['user_id'] ?? null,
             ]);
 
             DB::table('graduation_toga_order_nim_locks')

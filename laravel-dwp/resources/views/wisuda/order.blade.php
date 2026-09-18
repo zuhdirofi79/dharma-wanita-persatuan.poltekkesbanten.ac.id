@@ -61,12 +61,12 @@
                     @csrf
                     <div class="form-group">
                         <label for="student_name">Nama Lengkap <span style="color:#dc2626;">*</span></label>
-                        <input type="text" name="student_name" id="student_name" class="form-control" value="{{ old('student_name') }}" required>
+                        <input type="text" name="student_name" id="student_name" class="form-control" value="{{ old('student_name', auth()->user()->name) }}" required readonly>
                     </div>
                     <div class="form-group">
                         <label for="nim">NIM <span style="color:#dc2626;">*</span></label>
-                        <input type="text" name="nim" id="nim" class="form-control" value="{{ old('nim') }}" maxlength="50" required>
-                        <small class="wisuda-field-help">Setiap NIM hanya dapat melakukan satu kali pemesanan toga.</small>
+                        <input type="text" name="nim" id="nim" class="form-control" value="{{ old('nim', auth()->user()->nim) }}" maxlength="50" required readonly>
+                        <small class="wisuda-field-help">Setiap NIM hanya dapat melakukan satu kali pemesanan toga. NIM diambil dari akun login Anda.</small>
                         @error('nim')
                             <div class="wisuda-field-error">{{ $message }}</div>
                         @enderror

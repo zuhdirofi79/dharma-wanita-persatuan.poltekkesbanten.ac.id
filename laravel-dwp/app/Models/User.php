@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role', 'study_program_id', 'must_change_password', 'is_active'])]
+#[Fillable(['name', 'email', 'nim', 'password', 'role', 'study_program_id', 'must_change_password', 'is_active'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -36,6 +36,16 @@ class User extends Authenticatable
     public function studyProgram(): BelongsTo
     {
         return $this->belongsTo(StudyProgram::class);
+    }
+
+    public function togaOrders(): HasMany
+    {
+        return $this->hasMany(GraduationTogaOrder::class);
+    }
+
+    public function isStudent(): bool
+    {
+        return $this->role === 'mahasiswa';
     }
 
     public function isSuperAdmin(): bool
@@ -151,6 +161,7 @@ class User extends Authenticatable
             'superadmin' => 'Superadmin',
             'admin' => 'Admin',
             'admin_jurusan' => 'Admin Jurusan',
+            'mahasiswa' => 'Mahasiswa',
             default => ucfirst((string) $this->role),
         };
     }
