@@ -8,6 +8,7 @@ use App\Models\StudyProgram;
 use App\Models\User;
 use App\Services\StudentAccountProvisioner;
 use App\Services\StudentRegistrationService;
+use App\Services\StudentRosterImporter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Middleware\ThrottleRequests;
@@ -26,38 +27,61 @@ class StudentAuthenticationTest extends TestCase
         $this->withoutMiddleware(ThrottleRequests::class);
     }
 
-    public function test_new_student_can_register_from_official_roster(): void
+    public function test_roster_student_without_order_can_register(): void
     {
-        $this->roster('P27909999001', 'Mahasiswa Baru');
+        $this->roster('P27904122068', 'Mima Khaerunisa');
 
         $response = $this->post(route('student.register.submit'), $this->registerPayload(
-            'P27909999001',
-            'Mahasiswa Baru',
+            'P27904122068',
+            'mima khaerunisa',
         ));
 
         $response->assertRedirect(route('student.login'));
         $response->assertSessionHas('success');
         $this->assertGuest();
 
-        $user = User::query()->where('nim', 'P27909999001')->first();
+        $user = User::query()->where('nim', 'P27904122068')->first();
         $this->assertNotNull($user);
         $this->assertSame('mahasiswa', $user->role);
         $this->assertTrue(Hash::check('password123', $user->password));
         $this->assertNotSame('password123', $user->getRawOriginal('password'));
+        $this->assertSame(0, GraduationTogaOrder::query()->count());
     }
 
-    public function test_existing_account_cannot_register_again(): void
+    public function test_existing_account_cannot_register_again_even_when_on_roster(): void
     {
-        $this->student('P27903123235', 'Sri ardina mulyani');
+        $this->roster('P27904122068', 'Mima Khaerunisa');
+        $this->student('P27904122068', 'Mima Khaerunisa');
 
         $response = $this->from(route('student.register'))->post(route('student.register.submit'), $this->registerPayload(
-            'P27903123235',
-            'Sri ardina mulyani',
+            'P27904122068',
+            'Mima Khaerunisa',
         ));
 
         $response->assertRedirect(route('student.register'));
         $response->assertSessionHasErrors(['nim' => StudentRegistrationService::ALREADY_REGISTERED_MESSAGE]);
+        $this->assertSame(1, User::query()->where('nim', 'P27904122068')->count());
+        $this->get(route('student.register'))
+            ->assertOk()
+            ->assertSee('Login', false);
+    }
+
+    public function test_existing_order_without_roster_can_still_register(): void
+    {
+        $this->legacyOrder('P27903123235', 'Sri ardina mulyani', [
+            'order_code' => 'WSD-20260916-E7BX',
+            'status' => 'completed',
+            'payment_status' => 'verified',
+        ]);
+
+        $response = $this->post(route('student.register.submit'), $this->registerPayload(
+            'P27903123235',
+            'Sri Ardina Mulyani',
+        ));
+
+        $response->assertRedirect(route('student.login'));
         $this->assertSame(1, User::query()->where('nim', 'P27903123235')->count());
+        $this->assertSame(1, GraduationTogaOrder::query()->where('order_code', 'WSD-20260916-E7BX')->count());
     }
 
     public function test_registration_rejects_unknown_nim_without_order_or_roster(): void
@@ -69,6 +93,20 @@ class StudentAuthenticationTest extends TestCase
 
         $response->assertSessionHasErrors(['nim' => StudentRegistrationService::NIM_NOT_ELIGIBLE_MESSAGE]);
         $this->assertSame(0, User::query()->where('role', 'mahasiswa')->count());
+    }
+
+    public function test_registration_requires_matching_name_when_roster_exists(): void
+    {
+        $this->roster('P27904122068', 'Mima Khaerunisa');
+
+        $response = $this->from(route('student.register'))->post(route('student.register.submit'), $this->registerPayload(
+            'P27904122068',
+            'Nama Tidak Cocok',
+        ));
+
+        $response->assertSessionHasErrors(['name' => StudentRegistrationService::NAME_MISMATCH_MESSAGE]);
+        $this->assertSame(0, User::query()->where('nim', 'P27904122068')->count());
+        $this->assertSame(0, GraduationTogaOrder::query()->count());
     }
 
     public function test_registration_requires_matching_name_when_order_exists(): void
@@ -106,10 +144,11 @@ class StudentAuthenticationTest extends TestCase
 
     public function test_login_redirects_student_without_order_to_order_form(): void
     {
-        $this->student('P27909999001', 'Mahasiswa Baru');
+        $this->roster('P27904122068', 'Mima Khaerunisa');
+        $this->student('P27904122068', 'Mima Khaerunisa');
 
         $this->post(route('student.login.submit'), [
-            'nim' => 'P27909999001',
+            'nim' => 'P27904122068',
             'password' => 'password123',
         ])->assertRedirect(route('wisuda.order.create'));
     }
@@ -348,6 +387,28 @@ class StudentAuthenticationTest extends TestCase
         $this->assertSame(1, $stats['duplicate_nim']);
         $this->assertNotEmpty($stats['anomalies']);
         $this->assertSame(1, User::query()->where('nim', 'P12345')->count());
+    }
+
+    public function test_roster_importer_is_idempotent_and_does_not_create_users_or_orders(): void
+    {
+        $path = storage_path('app/testing-student-roster.csv');
+        file_put_contents($path, "nim,full_name\nP27904122068,Mima Khaerunisa\nP27904122068,Mima Duplikat\n,Nama Tanpa NIM\n");
+
+        $importer = app(StudentRosterImporter::class);
+        $first = $importer->import($path);
+        $second = $importer->import($path);
+
+        $this->assertSame(1, $first['imported']);
+        $this->assertSame(1, $first['duplicates_in_file']);
+        $this->assertSame(1, $first['invalid']);
+        $this->assertSame(0, $second['imported']);
+        $this->assertSame(1, $second['skipped_existing']);
+        $this->assertSame(1, StudentRoster::query()->count());
+        $this->assertSame('Mima Duplikat', StudentRoster::query()->where('nim_normalized', 'P27904122068')->value('full_name'));
+        $this->assertSame(0, User::query()->count());
+        $this->assertSame(0, GraduationTogaOrder::query()->count());
+
+        @unlink($path);
     }
 
     public function test_contacts_are_sourced_from_existing_wisuda_config(): void

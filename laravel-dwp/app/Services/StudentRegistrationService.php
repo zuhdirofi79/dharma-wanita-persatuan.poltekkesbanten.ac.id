@@ -10,13 +10,14 @@ use App\Support\NimNormalizer;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
 
 class StudentRegistrationService
 {
     public const ALREADY_REGISTERED_MESSAGE = 'Akun dengan NIM tersebut sudah terdaftar. Silakan login.';
 
-    public const NIM_NOT_ELIGIBLE_MESSAGE = 'NIM tersebut tidak dapat didaftarkan. Sistem hanya menerima NIM yang sudah tercatat pada pemesanan toga atau daftar mahasiswa resmi. Hubungi Tim Sekretariat DWP Poltekkes Kemenkes Banten jika Anda mahasiswa wisuda.';
+    public const NIM_NOT_ELIGIBLE_MESSAGE = 'NIM belum ditemukan dalam daftar mahasiswa yang dapat melakukan registrasi. Silakan periksa kembali NIM Anda atau hubungi Tim Sekretariat DWP.';
 
     public const NAME_MISMATCH_MESSAGE = 'Nama lengkap tidak sesuai dengan data NIM tersebut. Hubungi Tim Sekretariat DWP Poltekkes Kemenkes Banten untuk koreksi data.';
 
@@ -42,30 +43,16 @@ class StudentRegistrationService
             ]);
         }
 
+        $roster = $this->findRoster($nim);
         $orders = $this->ordersForNim($nim);
-        $roster = StudentRoster::query()->where('nim_normalized', $nim)->first();
 
-        if ($orders->isEmpty() && $roster === null) {
+        if ($roster === null && $orders->isEmpty()) {
             throw ValidationException::withMessages([
                 'nim' => self::NIM_NOT_ELIGIBLE_MESSAGE,
             ]);
         }
 
-        if ($orders->isNotEmpty()) {
-            $matching = $orders->first(
-                fn (GraduationTogaOrder $order) => NameNormalizer::matches($name, $order->student_name)
-            );
-
-            if ($matching === null) {
-                throw ValidationException::withMessages([
-                    'name' => self::NAME_MISMATCH_MESSAGE,
-                ]);
-            }
-        } elseif (filled($roster->full_name) && ! NameNormalizer::matches($name, $roster->full_name)) {
-            throw ValidationException::withMessages([
-                'name' => self::NAME_MISMATCH_MESSAGE,
-            ]);
-        }
+        $this->assertNameMatchesOfficialRecord($name, $roster, $orders);
 
         try {
             return DB::transaction(function () use ($nim, $name, $data, $orders) {
@@ -96,6 +83,17 @@ class StudentRegistrationService
         }
     }
 
+    public function findRoster(string $normalizedNim): ?StudentRoster
+    {
+        if ($normalizedNim === '' || ! Schema::hasTable('student_roster')) {
+            return null;
+        }
+
+        return StudentRoster::query()
+            ->where('nim_normalized', $normalizedNim)
+            ->first();
+    }
+
     public function syntheticEmail(string $nim): string
     {
         return strtolower($nim).'@'.config('students.email_domain');
@@ -106,10 +104,44 @@ class StudentRegistrationService
      */
     public function ordersForNim(string $normalizedNim)
     {
+        if ($normalizedNim === '') {
+            return collect();
+        }
+
         return GraduationTogaOrder::query()
             ->orderBy('id')
             ->get()
             ->filter(fn (GraduationTogaOrder $order) => NimNormalizer::normalize($order->nim) === $normalizedNim)
             ->values();
+    }
+
+    /**
+     * @param  Collection<int, GraduationTogaOrder>  $orders
+     */
+    private function assertNameMatchesOfficialRecord(string $name, ?StudentRoster $roster, Collection $orders): void
+    {
+        if ($roster && filled($roster->full_name)) {
+            if (! NameNormalizer::matches($name, $roster->full_name)) {
+                throw ValidationException::withMessages([
+                    'name' => self::NAME_MISMATCH_MESSAGE,
+                ]);
+            }
+
+            return;
+        }
+
+        if ($orders->isEmpty()) {
+            return;
+        }
+
+        $matching = $orders->first(
+            fn (GraduationTogaOrder $order) => NameNormalizer::matches($name, $order->student_name)
+        );
+
+        if ($matching === null) {
+            throw ValidationException::withMessages([
+                'name' => self::NAME_MISMATCH_MESSAGE,
+            ]);
+        }
     }
 }
